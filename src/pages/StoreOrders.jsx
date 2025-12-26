@@ -6,6 +6,7 @@ import AnalyticsSection from "../components/orders/AnalyticsSection";
 import OrderCard from "../components/orders/OrderCard";
 import LoadingSkeleton from "../components/orders/LoadingSkeleton";
 import EmptyStateMessage from "../components/orders/EmptyStateMessage";
+import { Loader2 } from "lucide-react";
 
 const StoreOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -128,6 +129,40 @@ const StoreOrders = () => {
     }
   };
 
+
+  const markAllAsCompleted = async () => {
+  try {
+    setLoading(true);
+
+    const ordersToUpdate = filteredOrders.filter(
+      (o) =>
+        o.status !== "completed" &&
+        o.status !== "cancelled"
+    );
+
+    for (const order of ordersToUpdate) {
+      await axios.put(
+        `${BASE_URL}orders/status/${order._id}`,
+        { status: "completed" },
+        { headers: { Authorization: `Bearer ${storeToken}` } }
+      );
+    }
+
+    toast.success("All orders marked as completed");
+    fetchAllOrders();
+  } catch (err) {
+    toast.error("Failed to mark all orders");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+  const hasPendingOrConfirmed = filteredOrders.some(
+  (o) => o.status === "pending" || o.status === "confirmed"
+);  
+
   return (
     <div className="w-full md:pl-65 mb-20 md:mb-0 p-4 bg-gray-50 min-h-screen text-sm">
       <h2 className="font-semibold text-lg mb-1">📦 Store Orders History</h2>
@@ -167,6 +202,26 @@ const StoreOrders = () => {
       </div>
 
       <hr className="my-4" />
+
+            {(statusFilter === "pending" || statusFilter === "confirmed") && hasPendingOrConfirmed && (
+                     <div className="flex justify-end mb-3">
+                       { !loading ? (
+                         <button
+                         onClick={markAllAsCompleted}
+                         className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700 transition"
+                       >
+                         Mark All as Completed
+                       </button>
+                       ) : (
+                       <button
+                         disabled
+                         className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700 transition"
+                       >
+                         <Loader2 className="w-4 h-4 mr-2 inline-block animate-spin" /> Processing...
+                       </button>
+                       ) }
+                     </div>
+                   )}
 
 
       {loading ? (

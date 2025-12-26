@@ -149,7 +149,7 @@ export default function FooterNavStore() {
                      }  w-auto md:flex-row md:items-center md:gap-2 p-4`}
                      >
                        <FaUtensils size={22} />
-                       <span className="text-xs md:text-sm">Menu Items</span>
+                       <span className="text-xs md:text-sm">Items</span>
                      </Link>
                    </div>
          
