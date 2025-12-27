@@ -14,7 +14,7 @@ const TableList = ({ tables, loading, onRefresh }) => {
     );
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <div className="w-full flex flex-wrap row-gap-2 justify-between md:justify-start">
       {tables.map((table) => (
         <TableCard key={table._id} table={table} onRefresh={onRefresh} />
       ))}

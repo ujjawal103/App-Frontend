@@ -213,35 +213,60 @@ const TableCard = ({ table, onRefresh }) => {
   return (
     <>
     {loading && <Loading message={message} />}
-      <div className="bg-pink-100 shadow-md rounded-xl p-4 flex flex-col items-center justify-between text-center border  border-pink-100 hover:shadow-lg transition">
-        <h2 className="text-lg font-semibold text-pink-600">Table #{table.tableNumber}</h2>
+      {/* <div className="relative bg-pink-100 shadow-md rounded-xl p-4 flex flex-col items-center justify-between text-center border border-pink-100 hover:shadow-lg transition"> */}
+      <div
+        className="relative cursor-pointer overflow-hidden rounded-2xl p-4 flex flex-col items-center justify-between
+        bg-pink-700 text-white shadow border-2 border-pink-700 hover:shadow-lg transition min-w-[167px] max-w-[160px] md:min-w-[300px] md:max-w-[300px] mb-4 md:ml-2"
+      >
+
+         <div className="absolute -bottom-10 -right-2 w-90 h-40 bg-yellow-400 rounded-[100px]"></div>
+        <div className="absolute top-10 left-20 w-40 h-60 bg-yellow-400 rounded-full md:left-40 md:w-50 md:h-50"></div>
+
+
+        <h2 className="text-lg font-semibold text-white z-2">Table #{table.tableNumber}</h2>
 
         <img
           src={table.qrCode}
           alt={`QR ${table.tableNumber}`}
-          className="w-24 h-24 my-3"
+          className="w-24 h-24 my-3 rounded-lg bg-white p-2 z-2"
         />
 
+        <div className="border-t border-1 border-white/100 mb-3 z-2 w-full"></div>
+
         {/* ✅ QR Actions */}
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-2 z-2">
           <button
             onClick={handleDownloadQR}
-            className="p-2 bg-blue-100 rounded-full hover:bg-blue-200 text-blue-600"
+            className="p-2 bg-pink-700 text-white rounded-full hover:bg-pink-800"
             title="Download QR"
           >
             <FaDownload size={14} />
           </button>
           <button
             onClick={handlePrintQR}
-            className="p-2 bg-green-100 rounded-full hover:bg-green-200 text-green-600 flex items-center gap-3"
+            className="p-2 bg-pink-700 text-white rounded-full hover:bg-pink-800 flex items-center"
             title="Print QR"
           >
             <FaPrint size={14} />
           </button>
+          <button
+            onClick={() => setShowEdit(true)}
+            className="p-2 bg-pink-700 text-white rounded-full hover:bg-pink-800"
+            title="Edit"
+          >
+            <FaEdit size={14} />
+          </button>
+          <button
+            onClick={() => setShowConfirm(true)} // ✅ open popup
+            className="p-2 bg-pink-700 text-white rounded-full hover:bg-pink-800 z-2"
+            title="Delete"
+          >
+            <FaTrash size={14} />
+          </button>
         </div>
 
         {/* ⚙️ Edit & Delete */}
-        <div className="flex gap-3 mt-3">
+        {/* <div className="flex gap-3 mt-3">
           <button
             onClick={() => setShowEdit(true)}
             className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
@@ -251,12 +276,12 @@ const TableCard = ({ table, onRefresh }) => {
           </button>
           <button
             onClick={() => setShowConfirm(true)} // ✅ open popup
-            className="p-2 bg-red-100 rounded-full hover:bg-red-200 text-red-600"
+            className="p-2 bg-red-100 rounded-full hover:bg-red-200 text-red-600 z-2"
             title="Delete"
           >
             <FaTrash size={14} />
           </button>
-        </div>
+        </div> */}
       </div>
 
 
