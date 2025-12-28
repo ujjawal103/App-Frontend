@@ -7,6 +7,7 @@ import QuickActionCard from "../components/storeHome/QuickActionCard";
 import MonthlyTopItems from "../components/storeHome/MonthlyTopItems";
 import Last5DaysAnalytics from "../components/storeHome/Last5DaysAnalytics";
 import HomeEndNote from "../components/storeHome/HomeEndNote";
+import QrToggleCard from "../components/storeHome/QrToggleCard";
 import axios from "axios";
 
 const StoreHome = () => {
@@ -245,6 +246,11 @@ useEffect(() => {
        </div>
 
       <Last5DaysAnalytics /> 
+
+      {/* QR ORDERING TOGGLE */}
+      <div className="p-2 lg:px-60">
+        <QrToggleCard />
+      </div>
 
        <div className="pt-4">
         <HomeEndNote />

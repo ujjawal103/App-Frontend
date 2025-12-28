@@ -44,23 +44,32 @@ const CartDrawer = ({ open, setOpen, cart, setCart, storeId, tableId, store }) =
     return c?.quantity || 0;
   };
 
-  // --- Group items ---
-  const groupedItems = cart.reduce((acc, curr) => {
-    if (!acc[curr.itemId]) {
-      acc[curr.itemId] = {
-        itemId: curr.itemId,
-        itemName: curr.itemName,
-        variants: [],
-      };
-    }
-    acc[curr.itemId].variants.push({
-      type: curr.variant,
-      quantity: curr.quantity,
-      price: curr.price,
-    });
-    return acc;
-  }, {});
-  const groupedArray = Object.values(groupedItems);
+   // --- Group items with totals ---
+const groupedItems = cart.reduce((acc, curr) => {
+  if (!acc[curr.itemId]) {
+    acc[curr.itemId] = {
+      itemId: curr.itemId,
+      itemName: curr.itemName,
+      variants: [],
+      totalItemPrice: 0
+    };
+  }
+
+  const variantTotal = curr.quantity * curr.price;
+
+  acc[curr.itemId].variants.push({
+    type: curr.variant,
+    quantity: curr.quantity,
+    price: curr.price,
+    total: variantTotal,
+  });
+
+  acc[curr.itemId].totalItemPrice += variantTotal;
+
+  return acc;
+}, {});
+
+const groupedArray = Object.values(groupedItems);
 
   // --- Billing ---
   const subTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -74,19 +83,30 @@ const CartDrawer = ({ open, setOpen, cart, setCart, storeId, tableId, store }) =
 
   // --- Checkout ---
   const handleCheckout = async () => {
-    if (cart.length === 0) return toast.error("Cart is empty");
+   if (cart.length === 0) return toast.error("Cart is empty");
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}orders/create`,
-        {
-          storeId,
-          tableId,
-          username: username.trim() || "Guest", // 👈 send username (optional)
-          items: groupedArray,
-        }
-      );
-      toast.success("Order placed successfully");
+
+      const billingSummary = {
+        subTotal,
+        gstApplicable,
+        gstRate,
+        restaurantChargeApplicable,
+        restaurantCharge,
+        gstAmount,
+        restaurantChargeAmount,
+        totalAmount: total
+      };
+
+      const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}orders/create`, {
+        storeId,
+        tableId,
+        username: username.trim() || "Guest",
+        items: groupedArray,
+        billingSummary,
+        orderMethod: "qr"
+      });
+      toast.success("Order created successfully");
       navigate("/order-success");
       setCart([]);
       setOpen(false);

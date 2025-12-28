@@ -171,7 +171,8 @@ const handleCheckout = async () => {
       tableId: selectedTable,
       username,
       items: groupedArray,
-      billingSummary
+      billingSummary,
+      orderMethod: "counter"
     });
 
     toast.success("Order created successfully");
