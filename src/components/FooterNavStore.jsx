@@ -14,6 +14,11 @@ import {
   FaChartBar,
   FaPlusCircle,
   FaUser,
+  FaQuestionCircle,
+  FaHeadset,
+  FaShieldAlt,
+  FaUndoAlt,
+  FaFileContract    
 } from "react-icons/fa";
 import axios from "axios";
 import Loading from "./Loading";
@@ -325,6 +330,105 @@ export default function FooterNavStore() {
                        <span className="text-sm">GST & Charges</span>
                      </Link>
                    </div>
+
+
+
+
+
+                    {/* help */}
+                    <div
+                      className={`hidden md:w-60 md:flex cursor-pointer ${
+                        isActive("/help")
+                          ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Link
+                        to="/help"
+                        className={`flex items-center gap-2 text-black md:text-white ${
+                          isActive("/help") ? "border-t" : ""
+                        } w-full p-4`}
+                      >
+                        <FaQuestionCircle size={22} />
+                        <span className="text-sm">Help</span>
+                      </Link>
+                    </div>    
+
+                    {/* Support */}
+                    <div
+                      className={`hidden md:w-60 md:flex cursor-pointer ${
+                        isActive("/support")
+                          ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Link
+                        to="/support"
+                        className={`flex items-center gap-2 text-black md:text-white ${
+                          isActive("/support") ? "border-t" : ""
+                        } w-full p-4`}
+                      >
+                        <FaHeadset size={22} />
+                        <span className="text-sm">Support</span>
+                      </Link>
+                    </div>
+
+
+                    {/* Privacy Policy */}
+                    <div
+                      className={`hidden md:w-60 md:flex cursor-pointer ${
+                        isActive("/privacy-policy")
+                          ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Link
+                        to="/privacy-policy"
+                        className={`flex items-center gap-2 text-black md:text-white ${
+                          isActive("/") ? "border-t" : ""
+                        } w-full p-4`}
+                      >
+                        <FaShieldAlt size={22} />
+                        <span className="text-sm">Privacy Policy</span>
+                      </Link>
+                    </div>
+
+                    {/* Terms and Conditions */}
+                    <div
+                      className={`hidden md:w-60 md:flex cursor-pointer ${
+                        isActive("/terms-and-conditions")
+                          ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Link
+                        to="/terms-and-conditions"
+                        className={`flex items-center gap-2 text-black md:text-white ${
+                          isActive("/terms-and-conditions") ? "border-t" : ""
+                        } w-full p-4`}
+                      >
+                        <FaFileContract size={22} />
+                        <span className="text-sm">Terms & Conditions</span>
+                      </Link>
+                    </div>
+
+
+                    {/* cancellation and refund policy */}
+                    <div
+                      className={`hidden md:w-60 md:flex cursor-pointer ${
+                        isActive("/cancellation-refund-policy")
+                          ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                      }`}
+                    >
+                      <Link
+                        to="/cancellation-refund-policy"
+                        className={`flex items-center gap-2 text-black md:text-white ${
+                          isActive("/cancellation-refund-policy") ? "border-t" : ""
+                        } w-full p-4`}
+                      >
+                        <FaUndoAlt size={22} />
+                        <span className="text-sm">Cancellation & Refund Policy</span>
+                      </Link>
+                    </div>
+
+
+
          
                    
                  </div>

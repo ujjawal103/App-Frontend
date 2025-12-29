@@ -8,6 +8,7 @@ import MonthlyTopItems from "../components/storeHome/MonthlyTopItems";
 import Last5DaysAnalytics from "../components/storeHome/Last5DaysAnalytics";
 import HomeEndNote from "../components/storeHome/HomeEndNote";
 import QrToggleCard from "../components/storeHome/QrToggleCard";
+import LeftMenuDrawer from "../components/LeftMenuDrawer";
 import axios from "axios";
 
 const StoreHome = () => {
@@ -16,6 +17,7 @@ const StoreHome = () => {
   const scrollRef = useRef(null);
   const [todayOrdersCount, setTodayOrdersCount] = useState(0);
   const [todayRevenue, setTodayRevenue] = useState(0);
+  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 const storeToken = localStorage.getItem("token");
@@ -88,13 +90,24 @@ useEffect(() => {
     <div className="w-full md:pl-60 pb-20 md:pb-0 bg-gray-50 min-h-screen pt-14 md:pt-0">
 
       {/* ===== MOBILE TOP HEADER ===== */}
-      <div className="fixed top-0 left-0 w-full h-14 bg-white border-b-3 border-pink-600 shadow-sm flex items-center justify-between px-4 z-50 md:hidden">
-        <img src="/tapResto.png" alt="Tap Resto" className="h-8" />
-        <div className="text-right">
-          <p className="text-xs text-gray-500">Today</p>
-          <p className="text-sm font-semibold text-green-800">₹ {todayRevenue.toFixed(2)}</p>
+        <div className="fixed top-0 left-0 w-full h-14 bg-white border-b-2 border-pink-600 shadow-sm flex items-center justify-between px-4 z-50 md:hidden">
+
+          {/* Left: Hamburger + Logo */}
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsLeftDrawerOpen(true)}>
+              ☰
+            </button>
+            <img src="/tapResto.png" alt="Tap Resto" className="h-8" />
+          </div>
+
+          {/* Right: Revenue */}
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Today</p>
+            <p className="text-sm font-semibold text-green-800">
+              ₹ {todayRevenue.toFixed(2)}
+            </p>
+          </div>
         </div>
-      </div>
 
       {/* ===== HERO / BANNER ===== */}
       <div className="relative h-52 md:h-64 w-full">
@@ -254,7 +267,15 @@ useEffect(() => {
 
        <div className="pt-4">
         <HomeEndNote />
-        </div>       
+        </div>    
+
+
+
+
+        <LeftMenuDrawer
+          isOpen={isLeftDrawerOpen}
+          onClose={() => setIsLeftDrawerOpen(false)}
+        />   
       
 
 
