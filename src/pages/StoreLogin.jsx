@@ -109,6 +109,15 @@ const StoreLogin = () => {
             Login
           </button>
           </form>
+          <p className="text-center text-xs text-gray-500 mb-4">
+                      By logging in, you agree to our{" "}
+                      <Link
+                        to="/terms-and-conditions"
+                        className="text-pink-600 font-medium hover:underline"
+                      >
+                        Terms & Conditions
+                      </Link>
+          </p>
           <p className="text-center text-sm mt-3">
                       New here ?{" "}
                       <Link to={"/store-signup"} className="text-blue-600 hover:underline">
