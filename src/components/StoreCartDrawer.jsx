@@ -86,56 +86,7 @@ const groupedArray = Object.values(groupedItems);
   const restaurantChargeAmount = restaurantChargeApplicable ? restaurantCharge : 0;
   const total = subTotal + gstAmount + restaurantChargeAmount;
 
-  // --- Checkout ---
-//   const handleCheckout = async () => {
-//   if (cart.length === 0) return toast.error("Cart is empty");
-//   if (!selectedTable) return toast.error("Select a table first");
 
-//   setLoading(true);
-
-//   const orderPayload = {
-//     storeId,
-//     tableId: selectedTable,
-//     username: username.trim() || "Guest",
-//     items: groupedArray,
-//   };
-
-//   try {
-//     // 🔵 Try online API
-//     await axios.post(`${import.meta.env.VITE_BASE_URL}orders/create`, orderPayload);
-
-//     toast.success("Order created successfully");
-//     navigate("/order-success");
-//     setCart([]);
-//     setOpen(false);
-
-//   } catch (err) {
-
-//     try {
-//       // 🟡 Try saving offline
-//       await savePendingOrder(orderPayload);
-
-//       toast("Order saved offline. Will sync when online.", { icon: "📡" });
-//       navigate("/order-success");
-//       setCart([]);
-//       setOpen(false);
-
-//     } catch (offlineErr) {
-
-//       // 🔴 Both online AND offline failed
-//       toast.error("Order could not be saved! Please retry.");
-
-//       console.error("Critical Order Save Error:", offlineErr);
-
-//       // DO NOT clear cart or navigate
-//       setLoading(false);
-//       return;
-//     }
-
-//   }
-
-//   setLoading(false);
-// };
 const handleCheckout = async () => {
   if (cart.length === 0) return toast.error("Cart is empty");
   if (!selectedTable) return toast.error("Select a table first");
@@ -248,17 +199,17 @@ const handleCheckout = async () => {
                           onClick={() =>
                             addToCart(group.itemId, group.itemName, v.type, v.price)
                           }
-                          className="px-3 py-1 rounded text-sm bg-blue-500 text-white"
+                          className="px-3 py-1 rounded text-sm bg-pink-600 text-white"
                         >
                           + Add
                         </button>
                       ) : (
-                        <div className="flex items-center border rounded-md px-2 py-1 bg-gray-50">
+                        <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                           <button
                             onClick={() =>
                               updateQuantity(group.itemId, v.type, -1)
                             }
-                            className="px-2 text-lg font-semibold text-blue-600"
+                            className="px-2 text-lg font-semibold text-pink-600"
                           >
                             −
                           </button>
@@ -269,7 +220,7 @@ const handleCheckout = async () => {
                             onClick={() =>
                               updateQuantity(group.itemId, v.type, +1)
                             }
-                            className="px-2 text-lg font-semibold text-blue-600"
+                            className="px-2 text-lg font-semibold text-pink-600"
                           >
                             +
                           </button>
@@ -321,7 +272,7 @@ const handleCheckout = async () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter customer name (optional)"
-              className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+              className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-pink-400"
             />
           </div>
 
@@ -331,7 +282,7 @@ const handleCheckout = async () => {
           <button
             onClick={handleCheckout}
             disabled={loading}
-            className="fixed md:ml-65 md:mb-0 p-4 bottom-24 md:bottom-2 left-0 ml-[2vw] mr-[2vw] min-w-[96vw] md:min-w-[81vw] bg-blue-600 text-white py-2 rounded-md"
+            className="fixed md:ml-65 md:mb-0 p-4 bottom-24 md:bottom-2 left-0 ml-[2vw] mr-[2vw] min-w-[96vw] md:min-w-[81vw] bg-pink-600 text-white py-2 rounded-md"
           >
             {loading ? "Placing..." : "Create Order"}
           </button>

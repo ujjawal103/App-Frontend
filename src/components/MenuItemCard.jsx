@@ -84,19 +84,19 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                     disabled={!firstVariant.available}
                     className={`px-3 py-1 rounded text-sm cursor-pointer ${
                       firstVariant.available
-                        ? "bg-blue-500 text-white"
+                        ? "bg-pink-600 text-white"
                         : "bg-gray-300 cursor-not-allowed"
                     }`}
                   >
                     + Add
                   </button>
                 ) : (
-                  <div className="flex items-center border rounded-md px-2 py-1 bg-gray-50">
+                  <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                     <button
                       onClick={() =>
                         updateQuantity(item._id, firstVariant.name, -1)
                       }
-                      className="px-2 text-lg font-semibold text-blue-600 cursor-pointer"
+                      className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       −
                     </button>
@@ -107,7 +107,7 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                       onClick={() =>
                         updateQuantity(item._id, firstVariant.name, +1)
                       }
-                      className="px-2 text-lg font-semibold text-blue-600 cursor-pointer"
+                      className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       +
                     </button>
@@ -140,19 +140,19 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                     disabled={!variant.available}
                     className={`px-3 py-1 rounded text-sm cursor-pointer ${
                       variant.available
-                        ? "bg-blue-500 text-white"
+                        ? "bg-pink-600 text-white"
                         : "bg-gray-300 cursor-not-allowed"
                     }`}
                   >
                     + Add
                   </button>
                 ) : (
-                  <div className="flex items-center border rounded-md px-2 py-1 bg-gray-50">
+                  <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                     <button
                       onClick={() =>
                         updateQuantity(item._id, variant.name, -1)
                       }
-                      className="px-2 text-lg font-semibold text-blue-600 cursor-pointer"
+                      className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       −
                     </button>
@@ -163,7 +163,7 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                       onClick={() =>
                         updateQuantity(item._id, variant.name, +1)
                       }
-                      className="px-2 text-lg font-semibold text-blue-600 cursor-pointer"
+                      className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       +
                     </button>

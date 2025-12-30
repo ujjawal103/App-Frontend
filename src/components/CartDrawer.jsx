@@ -144,17 +144,17 @@ const groupedArray = Object.values(groupedItems);
                           onClick={() =>
                             addToCart(group.itemId, group.itemName, v.type, v.price)
                           }
-                          className="px-3 py-1 rounded text-sm bg-blue-500 text-white"
+                          className="px-3 py-1 rounded text-sm bg-pink-600 text-white"
                         >
                           + Add
                         </button>
                       ) : (
-                        <div className="flex items-center border rounded-md px-2 py-1 bg-gray-50">
+                        <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                           <button
                             onClick={() =>
                               updateQuantity(group.itemId, v.type, -1)
                             }
-                            className="px-2 text-lg font-semibold text-blue-600"
+                            className="px-2 text-lg font-semibold text-pink-600"
                           >
                             −
                           </button>
@@ -165,7 +165,7 @@ const groupedArray = Object.values(groupedItems);
                             onClick={() =>
                               updateQuantity(group.itemId, v.type, +1)
                             }
-                            className="px-2 text-lg font-semibold text-blue-600"
+                            className="px-2 text-lg font-semibold text-pink-600"
                           >
                             +
                           </button>
@@ -226,7 +226,7 @@ const groupedArray = Object.values(groupedItems);
           <button
             onClick={handleCheckout}
             disabled={loading}
-            className="fixed bottom-2 left-0 ml-[2vw] mr-[2vw] w-[96vw] bg-blue-600 text-white py-2 rounded-md"
+            className="fixed bottom-2 left-0 ml-[2vw] mr-[2vw] w-[96vw] bg-pink-600 text-white py-2 rounded-md"
           >
             {loading ? "Placing..." : "Place Order"}
           </button>
