@@ -147,6 +147,7 @@ const handleDelete = async () => {
 
             <div>
               <h3 className="text-lg font-semibold text-gray-800 break-words overflow-hidden">{item.itemName}</h3>
+              <p className="text-gray-600 text-sm break-words"><strong>Category : </strong>{item?.categoryId?.name}</p>
               <p className="text-gray-600 text-sm break-words">{item.description}</p>
             </div>
 

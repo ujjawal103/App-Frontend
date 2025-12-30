@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import ItemList from "../components/ItemList";
 import AddItemButton from "../components/AddItemButton";
 import FooterNavStore from "../components/FooterNavStore";
+import CategoryFilterBar from "../components/CategoryFilterBar";
 import Loading from "../components/Loading";
 import { Capacitor } from "@capacitor/core";
 import { getStoreItems } from "../offline/storeItemsDB";
@@ -17,6 +18,8 @@ const ItemManagement = () => {
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
   const [count, setCount] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const token = localStorage.getItem("token");
 
@@ -73,39 +76,90 @@ const ItemManagement = () => {
     }
   };
 
-  // ✅ Live Search
-  useEffect(() => {
-    if (!searchItem.trim()) {
-      setFilteredItems(items);
-      return;
-    }
-    const filtered = items.filter((item) =>
-      item.itemName.toLowerCase().includes(searchItem.toLowerCase())
+
+  const fetchCategories = async () => {
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}categories`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
-    setFilteredItems(filtered);
-  }, [searchItem, items]);
+    setCategories(res.data.categories || []);
+  } catch (err) {
+    toast.error("Failed to load categories");
+  }
+};
+
+
+const handleDeleteCategory = async (categoryId) => {
+
+  try {
+    await axios.delete(
+      `${import.meta.env.VITE_BASE_URL}categories/delete/${categoryId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    toast.success("Category deleted");
+    setActiveCategory("all");
+    fetchCategories();
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Failed to delete category");
+  }
+};
+
+
+const handleAddCategory = () => {
+  fetchCategories();
+};
+
+
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+  let data = items;
+
+  if (activeCategory !== "all") {
+    data = items.filter(
+      (item) => item.categoryId === activeCategory
+    );
+  }
+
+  if (searchItem.trim()) {
+    data = data.filter((item) =>
+      item.itemName.toLowerCase().includes(searchItem.toLowerCase())
+    );
+  }
+
+  setFilteredItems(data);
+}, [items, activeCategory, searchItem]);
+
+
+  useEffect(() => {
+  fetchItems();
+  fetchCategories();
+}, []);
+
 
   return (
     <>
       {loading && <Loading message={message} />}
 
-      <div className=" min-h-screen bg-gray-100 md:pl-64 md:pt-8 p-4 mb-20 md:mb-0">
+      <div className=" min-h-screen bg-gray-100 md:pl-64 md:pt-8 p-0 md:p-4 mb-20 md:mb-0">
         {/* ✅ Fixed Header */}
         <div className="fixed flex justify-between items-center bg-pink-600 w-full top-0 left-0 md:pl-64 p-4 z-10 shadow-md">
           <h1 className="text-xl md:text-2xl font-bold text-white text-center">
             Your Menu Items
           </h1>
-          <AddItemButton onAdd={handleAddItem} />
+           <AddItemButton
+            onAdd={handleAddItem}
+            fetchCategories={fetchCategories}
+          />
         </div>
 
-        <div className="mt-20"></div>
+        <div className="mt-16 md:mt-20 p-2 md:p-0"></div>
 
         {/* ✅ Analytics + Search Section */}
-        <div className="bg-white shadow-md rounded-lg p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+       <div className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-4 md:m-0 md:mb-6">
           <div>
             <h2 className="text-lg font-semibold text-pink-600">Menu Analytics</h2>
             <p className="text-gray-600 text-sm">
@@ -126,8 +180,24 @@ const ItemManagement = () => {
           </div>
         </div>
 
+
+
+        
+
+        <CategoryFilterBar
+          categories={categories}
+          activeCategory={activeCategory}
+          onSelect={setActiveCategory}
+          onDelete={handleDeleteCategory}
+          onAddCategory={handleAddCategory}
+        />
+
+
+
         {/* ✅ Item List */}
-        <ItemList items={filteredItems} onRefresh={fetchItems} />
+        <div className="p-4 pt-0 md:p-0">
+          <ItemList items={filteredItems} onRefresh={fetchItems} />
+        </div>
       </div>
 
       <FooterNavStore />

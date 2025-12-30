@@ -53,7 +53,7 @@ const HelpCenter = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white py-5 px-4 pb-20 md:pb-5">
+    <div className="min-h-screen bg-white py-5 px-4">
       <div className="max-w-5xl mx-auto bg-white rounded-2xl p-6 md:p-10">
 
         {/* Header */}

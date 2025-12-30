@@ -1,24 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
 const EditItemModal = ({ item, onClose, onUpdated }) => {
   const [itemName, setItemName] = useState(item?.itemName || "");
   const [description, setDescription] = useState(item?.description || "");
+  const [categoryId, setCategoryId] = useState(item?.categoryId || "");
+  const [categories, setCategories] = useState([]);
+
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({ itemName: "", description: "" });
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
+  const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
 
   const token = localStorage.getItem("token");
 
+  /* ---------------- FETCH CATEGORIES ---------------- */
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}categories`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setCategories(res.data.categories || []);
+      } catch (err) {
+        toast.error("Failed to load categories");
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({ itemName: "", description: "" });
+    setErrors({});
     setServerError("");
 
-    // basic validation
     let newErrors = {};
     if (!itemName.trim()) newErrors.itemName = "Item name is required";
+    if (!categoryId) newErrors.categoryId = "Category is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -29,7 +55,11 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
       setLoading(true);
       const res = await axios.put(
         `${import.meta.env.VITE_BASE_URL}items/edit/${item._id}`,
-        { itemName: itemName.trim(), description: description.trim() },
+        {
+          itemName: itemName.trim(),
+          description: description.trim(),
+          newCategoryId : categoryId,
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -37,15 +67,8 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
       onUpdated();
       onClose();
     } catch (err) {
-      console.error("EditItemModal Error:", err);
       const data = err.response?.data;
-      if (data?.errors && Array.isArray(data.errors) && data.errors.length) {
-        setServerError(data.errors[0].msg || JSON.stringify(data.errors));
-      } else if (data?.message) {
-        setServerError(data.message);
-      } else {
-        setServerError("Failed to update item");
-      }
+      setServerError(data?.message || "Failed to update item");
     } finally {
       setLoading(false);
     }
@@ -54,9 +77,44 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
   return (
     <div className="p-0 md:pl-65 fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-white rounded-xl w-11/12 max-w-md p-5 shadow-lg">
-        <h3 className="text-lg font-semibold mb-3 text-pink-600">Edit Item</h3>
+        <h3 className="text-lg font-semibold mb-4 text-pink-600">
+          Edit Item
+        </h3>
 
         <form onSubmit={handleSubmit} className="space-y-3">
+
+          {/* CATEGORY */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className={`w-full mt-1 p-2 border rounded-md text-sm ${
+                errors.categoryId ? "border-red-500" : "border-gray-300"
+              }`}
+              disabled={loadingCategories}
+            >
+              <option value="">
+                {loadingCategories ? "Loading..." : "Select category"}
+              </option>
+
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+
+            {errors.categoryId && (
+              <p className="text-xs text-red-600 mt-1">
+                {errors.categoryId}
+              </p>
+            )}
+          </div>
+
+          {/* ITEM NAME */}
           <div>
             <label className="text-sm font-medium text-gray-700">
               Item Name
@@ -64,18 +122,19 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
             <input
               type="text"
               value={itemName}
-              onChange={(e) => {
-                setItemName(e.target.value);
-                if (errors.itemName) setErrors({ ...errors, itemName: "" });
-              }}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm"
-              placeholder="e.g. Chili Potato"
+              onChange={(e) => setItemName(e.target.value)}
+              className={`w-full mt-1 p-2 border rounded-md text-sm ${
+                errors.itemName ? "border-red-500" : "border-gray-300"
+              }`}
             />
             {errors.itemName && (
-              <p className="text-xs text-red-600 mt-1">{errors.itemName}</p>
+              <p className="text-xs text-red-600 mt-1">
+                {errors.itemName}
+              </p>
             )}
           </div>
 
+          {/* DESCRIPTION */}
           <div>
             <label className="text-sm font-medium text-gray-700">
               Description
@@ -85,7 +144,6 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
               onChange={(e) => setDescription(e.target.value)}
               className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm"
               rows={3}
-              placeholder="Optional description"
             />
           </div>
 
@@ -93,19 +151,21 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
             <div className="text-sm text-red-600">{serverError}</div>
           )}
 
-          <div className="flex justify-end gap-3 mt-2">
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm"
               disabled={loading}
+              className="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm"
             >
               Cancel
             </button>
+
             <button
               type="submit"
-              className="px-4 py-2 rounded-md bg-pink-500 hover:bg-pink-600 text-white text-sm"
               disabled={loading}
+              className="px-4 py-2 rounded-md bg-pink-600 hover:bg-pink-700 text-white text-sm"
             >
               {loading ? "Saving..." : "Save"}
             </button>
