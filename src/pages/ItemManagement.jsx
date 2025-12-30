@@ -115,13 +115,16 @@ const handleAddCategory = () => {
 
 
 
-  useEffect(() => {
+ useEffect(() => {
   let data = items;
 
   if (activeCategory !== "all") {
-    data = items.filter(
-      (item) => item.categoryId === activeCategory
-    );
+    data = items.filter((item) => {
+      if (typeof item.categoryId === "string") {
+        return item.categoryId === activeCategory;
+      }
+      return item.categoryId?._id === activeCategory;
+    });
   }
 
   if (searchItem.trim()) {

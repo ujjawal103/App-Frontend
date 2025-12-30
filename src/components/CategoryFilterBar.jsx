@@ -19,7 +19,7 @@ const CategoryFilterBar = ({
 
 
   return (
-    <div className="mb-2 ml-1">
+    <div className="mb-2 mx-1">
       {/* 👉 SINGLE SCROLLABLE ROW */}
       <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
 
@@ -34,7 +34,7 @@ const CategoryFilterBar = ({
             ${
               activeCategory === "all"
                 ? "bg-pink-600 text-white border-pink-600"
-                : "bg-white text-gray-700 border-gray-300"
+                : "bg-yellow-50 text-gray-700 hover:text-white border-pink-600 hover:bg-pink-600"
             }`}
         >
           All
@@ -52,7 +52,7 @@ const CategoryFilterBar = ({
                 ${
                   isActive
                     ? "bg-pink-600 text-white border-pink-600"
-                    : "bg-yellow-50 text-gray-700 border-gray-300"
+                    : "bg-yellow-50 text-gray-700 hover:text-white border-pink-600 hover:bg-pink-600"
                 }`}
             >
               <span className="text-sm font-medium whitespace-nowrap">
