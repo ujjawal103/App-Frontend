@@ -62,7 +62,7 @@ const AdminLogin = () => {
 
   return (
    <>
-   {loading && <Loading message={message}/>}
+   {loading && <Loading message={message} width='full'/>}
     <div className=' h-screen w-full flex items-start justify-center md:justify-between bg-gray-50'>
         <div className="hidden md:flex md:items-center md:justify-center md:w-full md:h-screen">
           <img src="/authBanner.png" alt="banner" className="object-cover w-full h-full"/>
