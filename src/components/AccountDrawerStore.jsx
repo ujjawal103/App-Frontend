@@ -15,14 +15,57 @@ import {
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import EditStorePhotoModal from "../components/EditStorePhotoModel.jsx";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useContext } from "react";
+import { StoreDataContext } from "../context/StoreContext.jsx";
 
 
-export default function AccountDrawerStore({ isOpen, onClose, store }) {
+export default function AccountDrawerStore({ isOpen, onClose }) {
   const drawerRef = useRef();
   const navigate = useNavigate();
 
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const {store , setStore} = useContext(StoreDataContext);
   const [storePhoto, setStorePhoto] = useState(store?.storeDetails?.photo);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const token = localStorage.getItem("token");
+
+
+       useEffect(() => {
+    setStorePhoto(store?.storeDetails?.photo);
+  }, [store?.storeDetails?.photo]);
+
+  useEffect(() => {
+    console.log("store : ", store);
+  }, [store]);
+
+      const toggleStoreStatus = async () => {
+      if (updatingStatus) return;
+
+      const newStatus = store.status === "open" ? "closed" : "open";
+
+      try {
+        setUpdatingStatus(true);
+
+        const res = await axios.put(
+          `${import.meta.env.VITE_BASE_URL}stores/status`,
+          { status: newStatus },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        toast.success(res.data.message);
+
+          setStore((prev) => ({
+             ...prev,
+             status: res.data.store.status,
+             }));
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to update status");
+      } finally {
+        setUpdatingStatus(false);
+      }
+    };
 
   // Close on outside click
   useEffect(() => {
@@ -133,6 +176,46 @@ export default function AccountDrawerStore({ isOpen, onClose, store }) {
               <p className="text-white">{store?.storeDetails?.address || "N/A"}</p>
             </div>
           </div>
+
+
+
+
+          {/* 🔴 STORE STATUS TOGGLE */}
+          <div className={`mt-4 mb-2 flex items-center justify-between bg-gray-800 border ${store?.status === "open" ? "border-green-500" : "border-red-500"} rounded-lg px-4 py-3`}>
+
+            {/* LEFT: STATUS TEXT */}
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-400">Store Status</span>
+              <span
+                className={`font-semibold ${
+                  store?.status === "open" ? "text-green-400" : "text-red-400"
+                }`}
+              >
+                {store?.status === "open" ? "OPEN" : "CLOSED"}
+              </span>
+            </div>
+
+            {/* RIGHT: SWITCH */}
+            <button
+              onClick={toggleStoreStatus}
+              disabled={updatingStatus}
+              className={`relative w-14 h-8 rounded-full transition-colors duration-300
+                ${store?.status === "open" ? "bg-green-600" : "bg-gray-500"}
+                ${updatingStatus ? "opacity-60 cursor-not-allowed" : ""}`}
+            >
+              <span
+                className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md
+                  transform transition-transform duration-300
+                  ${store?.status === "open" ? "translate-x-6" : "translate-x-0"}`}
+              />
+            </button>
+          </div>
+
+
+
+
+
+
 
           {/* Edit Store Info Button */}
           <div className="mt-4 flex justify-center">
