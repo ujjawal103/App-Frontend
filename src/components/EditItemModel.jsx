@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 const EditItemModal = ({ item, onClose, onUpdated }) => {
   const [itemName, setItemName] = useState(item?.itemName || "");
   const [description, setDescription] = useState(item?.description || "");
-  const [categoryId, setCategoryId] = useState(item?.categoryId || "");
+  const [categoryId, setCategoryId] = useState(item?.categoryId?._id || "");
   const [categories, setCategories] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -15,6 +15,11 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
   const [serverError, setServerError] = useState("");
 
   const token = localStorage.getItem("token");
+
+
+   useEffect(() => {
+    setCategoryId(item?.categoryId?._id || "");
+  }, [item]);
 
   /* ---------------- FETCH CATEGORIES ---------------- */
   useEffect(() => {
@@ -97,7 +102,7 @@ const EditItemModal = ({ item, onClose, onUpdated }) => {
               disabled={loadingCategories}
             >
               <option value="">
-                {loadingCategories ? "Loading..." : "Select category"}
+                {loadingCategories ? "Loading..." : `${item?.categoryId?.name}`}
               </option>
 
               {categories.map((cat) => (
