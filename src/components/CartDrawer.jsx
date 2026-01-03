@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 const CartDrawer = ({ open, setOpen, cart, setCart, storeId, tableId, store }) => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState(""); // 👈 new state for username
+  const [whatsapp, setWhatsapp] = useState("");
+  const [whatsappError, setWhatsappError] = useState("");
   const navigate = useNavigate();
   if (!open) return null;
 
@@ -102,6 +104,7 @@ const groupedArray = Object.values(groupedItems);
         storeId,
         tableId,
         username: username.trim() || "Guest",
+        whatsapp: whatsapp.trim(),
         items: groupedArray,
         billingSummary,
         orderMethod: "qr"
@@ -112,7 +115,12 @@ const groupedArray = Object.values(groupedItems);
       setOpen(false);
       localStorage.setItem("lastOrder", JSON.stringify(data.order));
     } catch (err) {
-      toast.error(err.response?.data?.message || "Order failed");
+       const message = err.response?.data?.message;
+       if (message && message.toLowerCase().includes("valid 10-digit")) {
+          setWhatsappError(message);
+       } else {
+          toast.error(message || "Failed to create order");
+      }
     } finally {
       setLoading(false);
     }
@@ -220,6 +228,28 @@ const groupedArray = Object.values(groupedItems);
               className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
+
+
+
+          {/* WhatsApp Input */}
+         <input
+            type="tel"
+            value={whatsapp}
+            onChange={(e) => {
+              setWhatsapp(e.target.value);
+              if (whatsappError) setWhatsappError("");
+            }}
+            placeholder="Enter WhatsApp number (optional)"
+            className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-pink-400 mt-2"
+          />
+          {whatsappError && (
+            <p className="text-xs text-red-600 mt-1">
+              {whatsappError}
+            </p>
+          )}
+
+
+
 
           <div className="mb-14"></div>
 

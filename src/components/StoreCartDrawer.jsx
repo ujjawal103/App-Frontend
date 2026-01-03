@@ -7,6 +7,8 @@ import { savePendingOrder } from "../offline/pendingOrdersDB";
 const StoreCartDrawer = ({ open, setOpen, cart, setCart, storeId, store, tables }) => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [whatsappError, setWhatsappError] = useState("");
   const [selectedTable, setSelectedTable] = useState("");
   const navigate = useNavigate();
 
@@ -109,6 +111,7 @@ const handleCheckout = async () => {
     storeId,
     tableId: selectedTable,
     username: username.trim() || "Guest",
+    whatsapp: whatsapp.trim(),
     items: groupedArray,
     billingSummary,
     createdAt: Date.now(),
@@ -120,7 +123,8 @@ const handleCheckout = async () => {
     await axios.post(`${import.meta.env.VITE_BASE_URL}orders/create`, {
       storeId,
       tableId: selectedTable,
-      username,
+      username: username.trim() || "Guest",
+      whatsapp: whatsapp.trim(),
       items: groupedArray,
       billingSummary,
       orderMethod: "counter"
@@ -275,6 +279,27 @@ const handleCheckout = async () => {
               className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-pink-400"
             />
           </div>
+
+
+          {/* WhatsApp Input */}
+         <input
+            type="tel"
+            value={whatsapp}
+            onChange={(e) => {
+              setWhatsapp(e.target.value);
+              if (whatsappError) setWhatsappError("");
+            }}
+            placeholder="Enter WhatsApp number (optional)"
+            className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-pink-400 mt-2"
+          />
+          {whatsappError && (
+            <p className="text-xs text-red-600 mt-1">
+              {whatsappError}
+            </p>
+          )}
+
+
+
 
           <div className="mb-14"></div>
 
