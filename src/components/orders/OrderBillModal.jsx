@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Loader2, X, Printer } from "lucide-react";
 import axios from "axios";
+import ShareInvoiceButton from "./ShareInvoiceButton";
+import { motion, AnimatePresence } from "framer-motion";
+import CollectWhatsappInline from "./CollectWhatsappInline";
 
-const OrderBillModal = ({ orderId, onClose }) => {
+
+const OrderBillModal = ({ orderId, setOrders, onClose }) => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showWhatsappInput, setShowWhatsappInput] = useState(false);
   const printRef = useRef(null);
-  console.log("Order ID in Bill Modal:", orderId);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -25,6 +29,16 @@ const OrderBillModal = ({ orderId, onClose }) => {
     };
     fetchOrder();
   }, [orderId]);
+
+
+  const markShared=(orderId) =>{
+    setOrder(prev => ({ ...prev, isShared: true }));
+    setOrders(prev =>
+      prev.map(o =>
+        o._id === orderId ? { ...o, isShared: true } : o
+      )
+    );
+  }
 
   const handlePrint = () => {
   const printContents = printRef.current.innerHTML;
@@ -226,8 +240,34 @@ const OrderBillModal = ({ orderId, onClose }) => {
         </p>
       </div>
 
+    <AnimatePresence>
+      {showWhatsappInput && (
+        <motion.div
+          initial={{ height: 0, opacity: 0, y: -5 }}
+          animate={{ height: "auto", opacity: 1, y: 0 }}
+          exit={{ height: 0, opacity: 0, y: -5 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          style={{ overflow: "hidden" }}
+        >
+          <CollectWhatsappInline
+            orderId={order._id}
+            onSaved={(number) => {
+              setOrder(prev => ({ ...prev, whatsapp: number }));
+              setOrders(prev =>
+                              prev.map(o =>
+                                o._id === order._id ? { ...o, whatsapp: number } : o
+                              )
+                            );
+              setShowWhatsappInput(false);
+            }}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+
       {/* Buttons */}
-      <div className="mt-4 flex justify-center">
+      <div className="mt-4 flex justify-center gap-3">
         <button
           onClick={handlePrint}
           className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700"
@@ -235,6 +275,13 @@ const OrderBillModal = ({ orderId, onClose }) => {
           <Printer size={16} />
           Print Bill
         </button>
+        <ShareInvoiceButton
+          orderId={order._id}
+          text={order.isShared ? "Re-share" : "Share"}
+          currOrder={order}
+          onWhatsappMissing={() => setShowWhatsappInput(true)}
+          markShared={markShared}
+        />
       </div>
     </div>
   </div>

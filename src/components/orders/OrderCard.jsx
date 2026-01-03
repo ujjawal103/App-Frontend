@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import OrderBillModal from "./OrderBillModal.jsx";
+import ShareInvoiceButton from "./ShareInvoiceButton.jsx";
+import CollectWhatsappInline from "./CollectWhatsappInline";
+import { FaWhatsapp } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
-const OrderCard = ({ order, onUpdateStatus, onCancel, tableNumber = null }) => {
+
+
+const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = null }) => {
   const [loadingAction, setLoadingAction] = useState("");
   const [showBill, setShowBill] = useState(false); // 👈 controls modal
+  const [showWhatsappInput, setShowWhatsappInput] = useState(false);
+
 
   // --- Action Handlers ---
   const handleStatusUpdate = async (id, status, e) => {
@@ -27,6 +35,14 @@ const OrderCard = ({ order, onUpdateStatus, onCancel, tableNumber = null }) => {
     if (e.target.tagName === "BUTTON" || e.target.closest("button")) return;
     setShowBill(true);
   };
+
+  const markShared = (orderId) => {
+      setOrders(prev =>
+    prev.map(o =>
+      o._id === orderId ? { ...o, isShared: true } : o
+    )
+);
+  }
 
   return (
     <>
@@ -54,6 +70,7 @@ const OrderCard = ({ order, onUpdateStatus, onCancel, tableNumber = null }) => {
         </div>
 
         <p className="text-gray-600 mt-1 text-xs">👤 {order.username || "Guest"}</p>
+        <p className="text-gray-600 text-xs flex items-center gap-1"><FaWhatsapp /> {order.whatsapp || "Not provided"}</p>
         <p className="text-gray-500 text-xs">
           {new Date(order.createdAt).toLocaleString()}
         </p>
@@ -117,17 +134,58 @@ const OrderCard = ({ order, onUpdateStatus, onCancel, tableNumber = null }) => {
                 )}
               </button>
             )}
+
+
+            {order.status === "completed" && (
+                <ShareInvoiceButton
+                  orderId={order._id}
+                  text={order.isShared ? "Re-share" : "Share"}
+                  onWhatsappMissing={() => setShowWhatsappInput(true)}
+                  currOrder={order}
+                  markShared={markShared}
+                />
+             )}
           </div>
         </div>
+            {!order.whatsapp && 
+            <AnimatePresence>
+                {showWhatsappInput && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, y: -5 }}
+                    animate={{ height: "auto", opacity: 1, y: 0 }}
+                    exit={{ height: 0, opacity: 0, y: -5 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <CollectWhatsappInline
+                      orderId={order._id}
+                      onSaved={(number) => {
+                        setOrders(prev =>
+                          prev.map(o =>
+                            o._id === order._id ? { ...o, whatsapp: number } : o
+                          )
+                        );
+                        setShowWhatsappInput(false);
+                      }}
+                    />
+                  </motion.div>
+                )}
+            </AnimatePresence>
+            }
       </div>
 
       {/* Bill Modal */}
       {showBill && (
         <OrderBillModal
           orderId={order._id}
+          setOrders={setOrders}
           onClose={() => setShowBill(false)}
         />
       )}
+
+
+ 
+
     </>
   );
 };
