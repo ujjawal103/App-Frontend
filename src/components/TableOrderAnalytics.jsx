@@ -211,6 +211,7 @@ const markAllAsCompleted = async () => {
             <OrderCard
               key={o._id}
               order={o}
+              setOrders={setOrders}
               onUpdateStatus={updateStatus}
               onCancel={cancelOrder}
               tableNumber={table.tableNumber}

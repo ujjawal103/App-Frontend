@@ -328,6 +328,7 @@ const MonthlyAnalytics = () => {
             <OrderCard
               key={o._id}
               order={o}
+              setOrders={setFilteredOrders}
               onUpdateStatus={updateStatus}
               onCancel={cancelOrder}
             />

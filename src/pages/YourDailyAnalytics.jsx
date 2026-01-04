@@ -215,6 +215,7 @@ const YourDailyAnalytics = () => {
             <OrderCard
               key={o._id}
               order={o}
+              setOrders={setOrders}
               onUpdateStatus={updateStatus}
               onCancel={cancelOrder}
             />

@@ -52,7 +52,7 @@ const CollectWhatsappInline = ({ orderId, onSaved }) => {
           placeholder="Enter WhatsApp number"
           value={whatsappValue}
           onChange={(e) => {setWhatsappValue(e.target.value); setWhatsappError("")}}
-          className="flex-1 border border-pink-700 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-pink-400"
+          className="flex-1 border border-pink-700 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-pink-400 md:min-w-56"
         />
 
         <button
