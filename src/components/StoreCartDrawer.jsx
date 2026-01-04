@@ -92,6 +92,19 @@ const groupedArray = Object.values(groupedItems);
 const handleCheckout = async () => {
   if (cart.length === 0) return toast.error("Cart is empty");
   if (!selectedTable) return toast.error("Select a table first");
+  if (whatsapp) {
+        const num = Number(whatsapp);
+
+        if (
+          !/^\d{10}$/.test(whatsapp) ||   // not exactly 10 digits
+          num < 6000000000 ||              // starts below 6
+          num > 9999999999                 // more than 10 digits range
+        ) {
+          setWhatsappError("please enter a valid whatsapp");
+          return;
+        }
+  }
+
 
   setLoading(true);
 
