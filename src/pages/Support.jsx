@@ -31,7 +31,7 @@ const Support = () => {
               Reach out to us anytime via email.
             </p>
             <p className="font-medium text-gray-900">
-              support@tapresto.com
+              justtapresto@gmail.com
             </p>
           </div>
 
@@ -41,7 +41,7 @@ const Support = () => {
               ⏰ Support Hours
             </h3>
             <p className="text-gray-700 text-sm">
-              Monday – Saturday
+              Monday – Sunday
             </p>
             <p className="font-medium text-gray-900">
               10:00 AM – 6:00 PM (IST)
@@ -83,7 +83,7 @@ const Support = () => {
                 Call us during support hours.
             </p>
             <p className="font-medium text-gray-900">
-               <a href="tel:+917800466039">+91 7800466039</a>
+               <a href="tel:+919628316081">+91 9628316081</a>
             </p>
             </div>
 
@@ -95,7 +95,7 @@ const Support = () => {
 
             <div className="flex items-center gap-4">
                 <a
-                href="https://instagram.com/tapresto"
+                href="https://instagram.com/#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-pink-600 hover:scale-110 transition"
@@ -104,7 +104,7 @@ const Support = () => {
                 </a>
 
                 <a
-                href="https://linkedin.com/company/tapresto"
+                href="https://linkedin.com/company/#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-pink-600 hover:scale-110 transition"
@@ -113,7 +113,7 @@ const Support = () => {
                 </a>
 
                 <a
-                href="https://twitter.com/tapresto"
+                href="https://twitter.com/#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-pink-600 hover:scale-110 transition"
