@@ -108,7 +108,7 @@ const AdminLogin = () => {
             Login
           </button>
           </form>
-          <Link to={"/admin-signup"} className='text-blue-600 hover:underline'>Be the admin ? create an account</Link> 
+          {/* <Link to={"/admin-signup"} className='text-blue-600 hover:underline'>Be the admin ? create an account</Link>  */}
        </div>
        <div className='w-full'>
         <Link

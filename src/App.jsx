@@ -121,13 +121,11 @@ const navigate = useNavigate();
       <Routes>...
         <Route path='/' element={<Start />} />
         {/* <Route path='/login' element={<UserLogin />} />
-        <Route path='/signup' element={<UserSignup />} />
-        <Route path='/store-login' element={<StoreLogin />} />
-        <Route path='/store-signup' element={<StoreSignup />} />             */}
+        <Route path='/signup' element={<UserSignup />} />           */}
 
 
       <Route path='/admin-login' element={<AdminLogin />} />
-      <Route path='/admin-signup' element={<AdminSignup />} />
+      {/* <Route path='/admin-signup' element={<AdminSignup />} /> */}
 
        <Route path='/logout' element={
           <AdminProtectedWrapper>
