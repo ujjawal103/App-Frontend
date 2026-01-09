@@ -38,6 +38,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import RefundAndCancellationPolicy from './pages/RefundAndCancellationPolicy'
 import HelpCenter from './pages/HelpCenter'
 import Support from './pages/Support'
+import PricingPage from './pages/PricingPage'
+import SubscriptionSuccess from './pages/SubscriptionSuccess'
 
 
 
@@ -215,9 +217,7 @@ const navigate = useNavigate();
         <Route path='/store-login' element={<StoreLogin />} />
 
         <Route path='/store-signup' element={
-          <AdminProtectedWrapper>
             <StoreSignup />
-          </AdminProtectedWrapper>
         }
         />
 
@@ -249,6 +249,19 @@ const navigate = useNavigate();
         <Route path='/gst-charges' element={
           <StoreProtectedWrapper>
             <StoreChargesSettings />
+          </StoreProtectedWrapper>
+        } />
+
+
+        <Route path="/pricing" element={
+          <StoreProtectedWrapper>
+            <PricingPage />
+          </StoreProtectedWrapper>
+        } />
+
+        <Route path="/subscription-confirmed" element={
+          <StoreProtectedWrapper>
+            <SubscriptionSuccess />
           </StoreProtectedWrapper>
         } />
 

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
 
@@ -26,4 +26,71 @@
 }
 
 
+ */
+
+
+
+ @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* --------------------------------
+   Tailwind Theme Tokens (v4)
+--------------------------------- */
+@theme {
+  --color-brand-pink: #db2777;
+  --color-brand-yellow: #facc15;
+  --color-brand-dark: #1e1e1e;
+  --color-brand-light: #fffaf7;
+
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+}
+
+/* --------------------------------
+   Global Base Styles
+--------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-light);
+  color: var(--color-brand-dark);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+/* --------------------------------
+   Scrollbar Utilities
+--------------------------------- */
+
+/* Thin scrollbar */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(152, 148, 151, 0.4);
+  border-radius: 999px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* No scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 

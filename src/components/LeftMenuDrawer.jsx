@@ -6,6 +6,7 @@ import {
   FaUndoAlt,
   FaQuestionCircle,
   FaHeadset,
+  FaTags
 } from "react-icons/fa";
 
 const LeftMenuDrawer = ({ isOpen, onClose }) => {
@@ -55,6 +56,16 @@ const LeftMenuDrawer = ({ isOpen, onClose }) => {
 
         {/* Links */}
         <div className="p-4 space-y-2 text-sm">
+          <Link
+            to="/pricing"
+            onClick={onClose}
+            className={linkClass}
+          >
+            <FaTags className={iconClass} />
+            Pricing
+          </Link>
+
+
           <Link
             to="/terms-and-conditions"
             onClick={onClose}

@@ -137,6 +137,7 @@ export async function syncPendingOrders() {
 
   } catch (err) {
     console.log("❌ SYNC ERROR:", err.message);
+    toast.error("orders sync failed, will retry later");
   } finally {
     isSyncing = false;
   }
