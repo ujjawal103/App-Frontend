@@ -265,7 +265,7 @@ const openPayment = async (plan) => {
 
   return (
     <section id="pricing" className="py-10 md:py-20 bg-brand-light px-4">
-      <div className="text-center mb-14">
+      <div className={`text-center mb-14 ${gridsize ? "mt-10 md:mt-0" : ""}`}>
         <h2 className="text-4xl font-extrabold text-brand-dark mb-3">
           Simple, Transparent Pricing
         </h2>
@@ -318,7 +318,7 @@ const openPayment = async (plan) => {
       {/* Horizontal scroll container */}
       <div
         className={`
-            flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide
+            flex gap-6 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide
             max-w-6xl mx-auto
 
             ${gridsize
