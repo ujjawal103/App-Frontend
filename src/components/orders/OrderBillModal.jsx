@@ -4,6 +4,8 @@ import axios from "axios";
 import ShareInvoiceButton from "./ShareInvoiceButton";
 import { motion, AnimatePresence } from "framer-motion";
 import CollectWhatsappInline from "./CollectWhatsappInline";
+import { Capacitor } from "@capacitor/core";
+
 
 
 const OrderBillModal = ({ orderId, setOrders, onClose }) => {
@@ -40,88 +42,151 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
     );
   }
 
-  const handlePrint = () => {
-  const printContents = printRef.current.innerHTML;
-  const win = window.open("", "", "width=400,height=600");
+//   const handlePrint = () => {
+//   const printContents = printRef.current.innerHTML;
+//   const win = window.open("", "", "width=400,height=600");
 
-  // ✅ Add full URL for image if relative path
-  const absolutePhotoUrl = order.storeId.storeDetails.photo.startsWith("http")
-    ? order.storeId.storeDetails.photo
-    : `${window.location.origin}${order.storeId.storeDetails.photo}`;
+//   // ✅ Add full URL for image if relative path
+//   const absolutePhotoUrl = order.storeId.storeDetails.photo.startsWith("http")
+//     ? order.storeId.storeDetails.photo
+//     : `${window.location.origin}${order.storeId.storeDetails.photo}`;
 
-  // Inject HTML & Styles
-  win.document.write(`
-  <html>
-    <head>
-      <style>
-        * {
-          box-sizing: border-box;
-          word-wrap: break-word;
-        }
-        body {
-          font-family: 'Courier New', monospace;
-          padding: 10px;
-          margin: 0;
-        }
-        .bill-container {
-          width: 250px;
-          margin: auto;
-          text-align: center;
-          overflow-wrap: break-word;
-          word-break: break-word;
-        }
-        img {
-          display: block;
-          margin: 0 auto 8px auto;
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-        .line {
-          border-bottom: 1px dashed #ccc;
-          margin: 6px 0;
-        }
-        table {
-          width: 100%;
-          font-size: 12px;
-          border-collapse: collapse;
-          table-layout: fixed; /* ✅ ensures no column stretches */
-        }
-        td {
-          padding: 3px 0;
-          vertical-align: top;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-        }
-        .right {
-          text-align: right !important;
-        }
-        strong {
-          word-break: break-word;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="bill-container">
-        ${printContents}
-      </div>
-    </body>
-  </html>
-`);
+//   // Inject HTML & Styles
+//   win.document.write(`
+//   <html>
+//     <head>
+//       <style>
+//         * {
+//           box-sizing: border-box;
+//           word-wrap: break-word;
+//         }
+//         body {
+//           font-family: 'Courier New', monospace;
+//           padding: 10px;
+//           margin: 0;
+//         }
+//         .bill-container {
+//           width: 250px;
+//           margin: auto;
+//           text-align: center;
+//           overflow-wrap: break-word;
+//           word-break: break-word;
+//         }
+//         img {
+//           display: block;
+//           margin: 0 auto 8px auto;
+//           width: 80px;
+//           height: 80px;
+//           border-radius: 50%;
+//           object-fit: cover;
+//         }
+//         .line {
+//           border-bottom: 1px dashed #ccc;
+//           margin: 6px 0;
+//         }
+//         table {
+//           width: 100%;
+//           font-size: 12px;
+//           border-collapse: collapse;
+//           table-layout: fixed; /* ✅ ensures no column stretches */
+//         }
+//         td {
+//           padding: 3px 0;
+//           vertical-align: top;
+//           word-wrap: break-word;
+//           overflow-wrap: break-word;
+//         }
+//         .right {
+//           text-align: right !important;
+//         }
+//         strong {
+//           word-break: break-word;
+//         }
+//       </style>
+//     </head>
+//     <body>
+//       <div class="bill-container">
+//         ${printContents}
+//       </div>
+//     </body>
+//   </html>
+// `);
 
 
-  win.document.close();
+//   win.document.close();
 
-  // ✅ Wait for the image to load before printing
-  win.onload = () => {
-    win.focus();
-    win.print();
+//   // ✅ Wait for the image to load before printing
+//   win.onload = () => {
+//     win.focus();
+//     win.print();
 
-    // ✅ Optional: Trigger automatic PDF download with proper filename
-    win.document.title = `Order_${order._id}.pdf`;
-  };
+//     // ✅ Optional: Trigger automatic PDF download with proper filename
+//     win.document.title = `Order_${order._id}.pdf`;
+//   };
+// };
+
+
+const handlePrint = () => {
+  if (!Capacitor.isNativePlatform()) {
+    alert("Printing is supported only in the app.");
+    return;
+  }
+
+  if (!window.cordova?.plugins?.printer) {
+    alert("Printer plugin not available");
+    return;
+  }
+
+  const html = `
+    <html>
+      <head>
+        <style>
+          body {
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            margin: 0;
+          }
+          .bill-container {
+            width: 250px;
+            margin: auto;
+            text-align: center;
+          }
+          img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+          }
+          table {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: collapse;
+          }
+          td {
+            padding: 2px 0;
+            word-break: break-word;
+          }
+          .right {
+            text-align: right;
+          }
+        </style>
+      </head>
+      <body>
+        ${printRef.current.innerHTML}
+      </body>
+    </html>
+  `;
+
+  window.cordova.plugins.printer.print(
+    html,
+    { name: `Order_${order._id}` },
+    () => console.log("✅ Print success"),
+    (err) => console.error("❌ Print failed", err)
+  );
 };
+
+
 
 
   if (loading) {
