@@ -38,7 +38,7 @@ const plans = [
     id: "monthly",
     title: "Monthly Plan",
     price: "249",
-    amount: 1,
+    amount: 249,
     duration: "/month",
     description: "Pay monthly. Cancel anytime.",
     cta: "Pay ₹249 / month",
