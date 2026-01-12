@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,10 @@ const CartDrawer = ({ open, setOpen, cart, setCart, storeId, tableId, store }) =
   const [whatsappError, setWhatsappError] = useState("");
   const navigate = useNavigate();
   if (!open) return null;
+
+
+  
+  
 
   // --- Helper functions ---
   const updateQuantity = (itemId, variant, delta) => {
@@ -23,6 +27,8 @@ const CartDrawer = ({ open, setOpen, cart, setCart, storeId, tableId, store }) =
         .filter((i) => i.quantity > 0)
     );
   };
+
+  
 
   const addToCart = (itemId, itemName, variant, price) => {
     setCart((prevCart) => {
@@ -110,10 +116,24 @@ const groupedArray = Object.values(groupedItems);
         orderMethod: "qr"
       });
       toast.success("Order created successfully");
+      
       navigate("/order-success");
       setCart([]);
       setOpen(false);
-      localStorage.setItem("lastOrder", JSON.stringify(data.order));
+      
+      
+      const enrichedOrder = {
+        ...data.order,
+
+        // 👇 full store details injected from frontend state
+        storeDetails: {
+          storeName: store.storeName,
+          storeDetails: store.storeDetails, // address, phone, photo etc
+        }
+      };
+
+      localStorage.setItem("lastOrder", JSON.stringify(enrichedOrder));
+
     } catch (err) {
        const message = err.response?.data?.message;
        if (message && message.toLowerCase().includes("valid 10-digit")) {

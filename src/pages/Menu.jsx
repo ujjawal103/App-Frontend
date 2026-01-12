@@ -6,6 +6,9 @@ import CartDrawer from "../components/CartDrawer";
 import CategoryFilterQRBar from "../components/CategoryFilterQRBar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Helmet } from 'react-helmet-async'
+import { useNavigate } from "react-router-dom";
+
 
 const Menu = ({ restaurantName = "Demo sweets" }) => {
   const { storeId, tableId } = useParams();
@@ -18,12 +21,29 @@ const Menu = ({ restaurantName = "Demo sweets" }) => {
   const [store, setStore] = useState({});
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
+  const navigate = useNavigate();
+  const [lastOrder, setLastOrder] = useState(null);
+
+
 
 
   useEffect(() => {
     fetchMenu();
     fetchCategories();
   }, [storeId]);
+
+
+  useEffect(() => {
+  const stored = localStorage.getItem("lastOrder");
+  if (stored) {
+    try {
+      setLastOrder(JSON.parse(stored));
+    } catch {
+      setLastOrder(null);
+    }
+  }
+}, []);
+
 
 
   const fetchCategories = async () => {
@@ -160,6 +180,14 @@ const handleSearch = (e) => {
 
   return (
     <div className="pb-28 min-h-[100vh] bg-gray-200">
+
+      <Helmet>
+        <title>{store?.storeName || "Store"} Menu – QR Ordering by Tap Resto</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+
+
+
       {/* Navbar */}
       <h1 className="text-2xl font-bold text-center mb-2 px-4 pt-4">
         {store.storeName || restaurantName}
@@ -213,15 +241,42 @@ const handleSearch = (e) => {
         store={store}
       />
 
-      {/* Floating Cart Button */}
-      {cart.length > 0 && (
-        <button
-          onClick={() => setCartOpen(true)}
-          className="fixed bottom-5 right-5 bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg z-10"
-        >
-          View Cart ({new Set(cart.map((i) => i.itemId)).size})
-        </button>
+      {/* Bottom Action Bar */}
+      {(cart.length > 0 || lastOrder) && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-200 border-t p-3 z-10">
+          <div
+            className={`flex gap-3 ${
+              cart.length > 0 && lastOrder ? "flex-row" : "flex-col"
+            }`}
+          >
+            {/* Last Order Button */}
+            {lastOrder && (
+              <button
+                onClick={() => navigate("/last-order")}
+                className={`bg-gray-800 text-white py-3 rounded font-medium ${
+                  cart.length > 0 ? "w-1/2" : "w-full"
+                }`}
+              >
+                My Last Order
+              </button>
+            )}
+
+            {/* View Cart Button */}
+            {cart.length > 0 && (
+              <button
+                onClick={() => setCartOpen(true)}
+                className={`bg-pink-600 text-white py-3 rounded font-medium ${
+                  lastOrder ? "w-1/2" : "w-full"
+                }`}
+              >
+                View Cart ({new Set(cart.map(i => i.itemId)).size})
+              </button>
+            )}
+          </div>
+        </div>
       )}
+
+
     </div>
   );
 };

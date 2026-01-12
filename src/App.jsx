@@ -41,6 +41,7 @@ import Support from './pages/Support'
 import PricingPage from './pages/PricingPage'
 import SubscriptionSuccess from './pages/SubscriptionSuccess'
 import PrinterSettings from './pages/PrinterSettings'
+import LastOrderPage from '../../frontend/src/pages/LastOrderPage'
 
 
 
@@ -152,6 +153,8 @@ const navigate = useNavigate();
           <Route path='/order/:storeId/:tableId' element={
             <Menu/>
           } />
+
+          <Route path="/last-order" element={<LastOrderPage />} />
 
           <Route path='/store-menu' element={
             <StoreProtectedWrapper>
