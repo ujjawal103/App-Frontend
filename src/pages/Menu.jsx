@@ -6,7 +6,6 @@ import CartDrawer from "../components/CartDrawer";
 import CategoryFilterQRBar from "../components/CategoryFilterQRBar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Helmet } from 'react-helmet-async'
 import { useNavigate } from "react-router-dom";
 
 
@@ -180,11 +179,6 @@ const handleSearch = (e) => {
 
   return (
     <div className="pb-28 min-h-[100vh] bg-gray-200">
-
-      <Helmet>
-        <title>{store?.storeName || "Store"} Menu – QR Ordering by Tap Resto</title>
-        <meta name="robots" content="noindex,nofollow" />
-      </Helmet>
 
 
 
