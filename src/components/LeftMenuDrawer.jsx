@@ -6,7 +6,8 @@ import {
   FaUndoAlt,
   FaQuestionCircle,
   FaHeadset,
-  FaTags
+  FaTags,
+  FaPrint
 } from "react-icons/fa";
 
 const LeftMenuDrawer = ({ isOpen, onClose }) => {
@@ -109,6 +110,16 @@ const LeftMenuDrawer = ({ isOpen, onClose }) => {
           >
             <FaHeadset className={iconClass} />
             Support
+          </Link>
+
+
+          <Link
+            to="/printer-settings"
+            onClick={onClose}
+            className={linkClass}
+          >
+            <FaPrint className={iconClass} />
+            Printer Settings
           </Link>
         </div>
       </div>

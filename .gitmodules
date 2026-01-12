@@ -1,0 +1,3 @@
+[submodule "capacitor-pos-printer"]
+	path = capacitor-pos-printer
+	url = https://github.com/ujjawal103/PosPrinter-Plugin-Capacitor.git

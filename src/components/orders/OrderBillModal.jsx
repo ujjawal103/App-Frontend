@@ -5,6 +5,23 @@ import ShareInvoiceButton from "./ShareInvoiceButton";
 import { motion, AnimatePresence } from "framer-motion";
 import CollectWhatsappInline from "./CollectWhatsappInline";
 import { Capacitor } from "@capacitor/core";
+import { PosPrinter } from "../../plugins/posPrinter";
+import toast from "react-hot-toast";
+
+
+const isAndroid = Capacitor.getPlatform() === "android";
+
+async function ensureBluetoothPermission() {
+  if (!isAndroid) return true;
+
+  try {
+    await navigator.permissions.query({ name: "bluetooth" });
+    return true;
+  } catch {
+    return true; // Capacitor handles native permission internally
+  }
+}
+
 
 
 
@@ -13,6 +30,48 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [showWhatsappInput, setShowWhatsappInput] = useState(false);
   const printRef = useRef(null);
+
+
+  function generateBillText(order) {
+  let text = "";
+
+  text += `${order.storeId.storeName}\n`;
+  text += "--------------------------\n";
+  text += `${order.storeId.storeDetails.address}\n`;
+  text += `Phone: ${order.storeId.storeDetails.phoneNumber}\n\n`;
+
+  text += "--------------------------\n";
+  text += `Order ID: ${order._id}\n`;
+  text += `Table: ${order.tableId?.tableNumber || "N/A"}\n`;
+  text += `Date: ${new Date(order.createdAt).toLocaleString()}\n`;
+  text += "--------------------------\n";
+
+  order.items.forEach(item => {
+    text += `${item.itemName}\n`;
+    item.variants.forEach(v => {
+      text += `  ${v.type} x ${v.quantity}    ₹${v.total.toFixed(2)}\n`;
+    });
+  });
+
+  text += "--------------------------\n";
+  text += `Subtotal        ₹${order.subTotal.toFixed(2)}\n`;
+
+  if (order.gstApplicable) {
+    text += `GST (${order.gstRate * 100}%)        ₹${order.gstAmount.toFixed(2)}\n`;
+  }
+
+  if (order.restaurantChargeApplicable) {
+    text += `Service Charge  ₹${order.restaurantChargeAmount.toFixed(2)}\n`;
+  }
+
+  text += "--------------------------\n";
+  text += `TOTAL           ₹${order.totalAmount.toFixed(2)}\n`;
+  text += "--------------------------\n";
+  text += "Thank you for visiting 🙂\n\n\n";
+
+  return text;
+}
+
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -41,6 +100,50 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
       )
     );
   }
+
+const handlePrint = async () => {
+  try {
+    if (!Capacitor.isNativePlatform()) {
+      toast.error("Printing available only in app");
+      return;
+    }
+
+    toast.dismiss();
+    toast.loading("Checking printer...");
+
+    const printer = await PosPrinter.checkPrinter();
+
+    toast.dismiss();
+    toast.loading("Printing...");
+
+    const billText = generateBillText(order);
+
+    await PosPrinter.printText({ text: billText });
+
+    toast.dismiss();
+    toast.success(`Printed on ${printer.name}`);
+  } catch (err) {
+    toast.dismiss();
+
+    const msg = err?.message || "";
+
+    if (msg.toLowerCase().includes("disabled")) {
+      toast("Please turn on Bluetooth", { icon: "🔵" });
+      await PosPrinter.openBluetoothSettings();
+      return;
+    }
+
+    toast.error(msg || "No printer connected");
+  }
+};
+
+
+
+
+
+
+//oldest
+
 
 //   const handlePrint = () => {
 //   const printContents = printRef.current.innerHTML;
@@ -126,65 +229,72 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
 // };
 
 
-const handlePrint = () => {
-  if (!Capacitor.isNativePlatform()) {
-    alert("Printing is supported only in the app.");
-    return;
-  }
+// const handlePrint = () => {
+//   if (!Capacitor.isNativePlatform()) {
+//     alert("Printing is supported only in the app.");
+//     return;
+//   }
 
-  if (!window.cordova?.plugins?.printer) {
-    alert("Printer plugin not available");
-    return;
-  }
+//   if (!window.cordova?.plugins?.printer) {
+//     alert("Printer plugin not available");
+//     return;
+//   }
 
-  const html = `
-    <html>
-      <head>
-        <style>
-          body {
-            font-family: 'Courier New', monospace;
-            padding: 10px;
-            margin: 0;
-          }
-          .bill-container {
-            width: 250px;
-            margin: auto;
-            text-align: center;
-          }
-          img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 8px;
-          }
-          table {
-            width: 100%;
-            font-size: 12px;
-            border-collapse: collapse;
-          }
-          td {
-            padding: 2px 0;
-            word-break: break-word;
-          }
-          .right {
-            text-align: right;
-          }
-        </style>
-      </head>
-      <body>
-        ${printRef.current.innerHTML}
-      </body>
-    </html>
-  `;
+//   const html = `
+//     <html>
+//       <head>
+//         <style>
+//           body {
+//             font-family: 'Courier New', monospace;
+//             padding: 10px;
+//             margin: 0;
+//           }
+//           .bill-container {
+//             width: 250px;
+//             margin: auto;
+//             text-align: center;
+//           }
+//           img {
+//             width: 80px;
+//             height: 80px;
+//             border-radius: 50%;
+//             object-fit: cover;
+//             margin-bottom: 8px;
+//           }
+//           table {
+//             width: 100%;
+//             font-size: 12px;
+//             border-collapse: collapse;
+//           }
+//           td {
+//             padding: 2px 0;
+//             word-break: break-word;
+//           }
+//           .right {
+//             text-align: right;
+//           }
+//         </style>
+//       </head>
+//       <body>
+//         ${printRef.current.innerHTML}
+//       </body>
+//     </html>
+//   `;
 
-  window.cordova.plugins.printer.print(
-    html,
-    { name: `Order_${order._id}` },
-    () => console.log("✅ Print success"),
-    (err) => console.error("❌ Print failed", err)
-  );
-};
+//   window.cordova.plugins.printer.print(
+//     html,
+//     { name: `Order_${order._id}` },
+//     () => console.log("✅ Print success"),
+//     (err) => console.error("❌ Print failed", err)
+//   );
+// };
+
+
+
+
+
+
+
 
 
 

@@ -40,6 +40,7 @@ import HelpCenter from './pages/HelpCenter'
 import Support from './pages/Support'
 import PricingPage from './pages/PricingPage'
 import SubscriptionSuccess from './pages/SubscriptionSuccess'
+import PrinterSettings from './pages/PrinterSettings'
 
 
 
@@ -274,6 +275,13 @@ const navigate = useNavigate();
         <Route path='/cancellation-refund-policy' element={<RefundAndCancellationPolicy />} />
         <Route path='/help' element={<HelpCenter />} />
         <Route path='/support' element={<Support />} />
+
+
+        <Route path='/printer-settings' element={
+          <StoreProtectedWrapper>
+            <PrinterSettings />
+          </StoreProtectedWrapper>
+        } />
 
 
 
