@@ -10,7 +10,7 @@ export async function scheduleDailyMorningNotification() {
     notifications: [
       {
         id: 1,
-        title: "Happy morning ☕",
+        title: "Hey Boss",
         body: "update your menu items for today",
         smallIcon: "ic_stat_notify",
         // iconColor: "#E91E63",
@@ -21,7 +21,7 @@ export async function scheduleDailyMorningNotification() {
         schedule: {
           repeats: true,
           every: "day",
-          at: new Date(new Date().setHours(22, 39, 0, 0)), // daily 7:25 PM
+          at: new Date(new Date().setHours(9, 0, 0, 0)), // daily 9:00 AM
         },
       },
     ],

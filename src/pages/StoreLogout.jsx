@@ -37,7 +37,7 @@ const StoreLogout = () => {
       })
       .catch((error) => {
         console.error("Error logging out:", error);
-        toast.error("Logout failed!");
+        // toast.error("Logout failed!");
       });
   };
 

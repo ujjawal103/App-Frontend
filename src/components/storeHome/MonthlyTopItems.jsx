@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import LoadingSkeleton from "../orders/LoadingSkeleton";
+import TopItemCardSkeleton from "./TopItemCardSkeleton";
 import EmptyStateMessage from "../orders/EmptyStateMessage";
 import TopItemCard from "./TopItemCard";
 
@@ -105,7 +105,26 @@ const MonthlyTopItems = () => {
     fetchTopItems();
   }, []);
 
-  if (loading) return <LoadingSkeleton />;
+    if (loading) {
+  return (
+    <div className="px-2 md:px-5 mt-6">
+      <h3 className="text-lg font-semibold mb-4">
+        🏆 Top Items This Month
+      </h3>
+
+      <div className="flex gap-4 overflow-x-auto no-scrollbar items-stretch">
+        {[...Array(5)].map((_, index) => (
+          <div
+            key={index}
+            className="w-[172px] md:w-[237px] h-full shrink-0 flex"
+          >
+            <TopItemCardSkeleton />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
   if (topItems.length === 0) {
     return <EmptyStateMessage message="Top items not available this month" />;
@@ -117,16 +136,18 @@ const MonthlyTopItems = () => {
         🏆 Top Items This Month
       </h3>
 
-      <div className="flex gap-4 overflow-x-auto no-scrollbar">
+
+        <div className="flex gap-4 overflow-x-auto no-scrollbar items-stretch">
         {topItems.map((item, index) => (
-          <div key={item.itemId} className="min-w-[170px] md:min-w-[230px]">
-            <TopItemCard
-              item={item}
-              rank={index + 1}
-            />
+          <div
+            key={item.itemId}
+            className="w-[172px] md:w-[237px] h-full shrink-0 flex"
+          >
+            <TopItemCard item={item} rank={index + 1} />
           </div>
         ))}
       </div>
+
 
     </div>
   );

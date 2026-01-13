@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import LoadingSkeleton from "../orders/LoadingSkeleton";
+import DayAnalyticsCardSkeleton from "./DayAnalyticsCardSkeleton";
 import DayAnalyticsCard from "./DayAnalyticsCard";
 
 const Last5DaysAnalytics = () => {
@@ -86,7 +86,22 @@ const Last5DaysAnalytics = () => {
 }, [daysData]);
 
 
-  if (loading) return <LoadingSkeleton />;
+  if (loading) {
+  return (
+    <div className="px-2 md:px-5 mt-6">
+      <h3 className="text-lg font-semibold mb-4">
+        📊 Last 5 Days Performance
+      </h3>
+
+      <div className="flex gap-4 md:gap-7 overflow-x-auto no-scrollbar">
+        {[...Array(5)].map((_, index) => (
+          <DayAnalyticsCardSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
   return (
     <div className="px-2 md:px-5 mt-6">
