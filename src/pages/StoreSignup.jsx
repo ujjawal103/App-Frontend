@@ -29,56 +29,51 @@ const StoreSignup = () => {
 
   const token = localStorage.getItem("token");
 
-  
-
   const submitHandler = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("Creating Store...");
-    setError("");
-    setValidationErrors({});
+  e.preventDefault();
+  setLoading(true);
+  setMessage("Sending OTP...");
+  setError("");
+  setValidationErrors({});
 
-    try {
-
-
-      if (!gstApplicable) {
+  try {
+    if (!gstApplicable) {
         setGstRate("");
       }
-      if (!restaurantChargeApplicable) {
+    if (!restaurantChargeApplicable) {
         setRestaurantCharge("");
       }
 
-      const storeData = {
-        storeName,
+
+    const storeData = {
+      storeName,
+      email,
+      password,
+      storeDetails: { address, phoneNumber },
+      gstSettings: {
+        gstApplicable,
+        gstRate: parseFloat(gstRate),
+        restaurantChargeApplicable,
+        restaurantCharge: parseFloat(restaurantCharge),
+      },
+    };
+
+    await axios.post(
+      `${import.meta.env.VITE_BASE_URL}stores/register`,
+      storeData
+    );
+
+    navigate("/verify-otp", {
+      state: {
         email,
-        password,
-        storeDetails: { address, phoneNumber },
-        gstSettings: {
-          gstApplicable,
-          gstRate: parseFloat(gstRate),
-          restaurantChargeApplicable,
-          restaurantCharge: parseFloat(restaurantCharge),
-        },
-      };
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}stores/register`,
-        storeData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 201) {
-        const data = response.data;
-        setStore(data.store);
-        localStorage.setItem("token", data.token);
-        toast.success("Store registration successful!");
-        navigate("/store-home");
+        tempData: storeData,
+        flow: "VERIFY_EMAIL"
       }
-    } catch (error) {
+    });
+
+
+
+  } catch (error) {
       console.error("❌ Error in registerStore:", error);
       console.log("❌ Error Response Data:", error.response?.data?.errors);
 
@@ -96,18 +91,21 @@ const StoreSignup = () => {
       } else {
         setError(
           error.response?.data?.message ||
-            "You can't create a store. Only Admins can create stores."
+            "Some error occurred during registration."
         );
       }
-    } finally {
-      setLoading(false);
-      setMessage("");
-    }
-  };
+  } finally {
+    setLoading(false);
+    setMessage("");
+  }
+};
+
+
+
 
   return (
     <>
-      {loading && <Loading message={message} width='full'/>}
+      {/* {loading && <Loading message={message} width="full" />} */}
       <div className="min-h-screen w-full flex items-center justify-center md:justify-between bg-white">
         <div className="hidden md:flex md:items-center md:justify-center md:w-full md:h-screen">
           <img src="/authBanner.png" alt="banner" className="object-cover w-full h-full"/>
@@ -167,11 +165,6 @@ const StoreSignup = () => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 required
               />
-              {validationErrors["storeDetails.phoneNumber"] && (
-              <p className="text-red-500 text-xs mb-1">
-                {validationErrors["storeDetails.phoneNumber"]}
-              </p>
-              )}
               <input
                 className="w-full md:w-1/2 p-2 border border-gray-300 rounded mb-1 text-sm"
                 type="text"
@@ -181,6 +174,11 @@ const StoreSignup = () => {
                 required
               />
             </div>
+            {validationErrors["storeDetails.phoneNumber"] && (
+              <p className="text-red-500 text-xs mb-1">
+                {validationErrors["storeDetails.phoneNumber"]}
+              </p>
+              )}
             {validationErrors["storeDetails.address"] && (
               <p className="text-red-500 text-xs mb-1">
                 {validationErrors["storeDetails.address"]}
@@ -188,7 +186,7 @@ const StoreSignup = () => {
             )}
 
 
-            <h3 className="text-lg font-semibold mb-1">GST & Charges</h3>
+            {/* <h3 className="text-lg font-semibold mb-1">GST & Charges</h3>
             <div className="flex items-center mb-2">
               <input
                 type="checkbox"
@@ -242,12 +240,12 @@ const StoreSignup = () => {
               <p className="text-red-500 text-xs mb-1">
                 {validationErrors["gstSettings.restaurantCharge"]}
               </p>
-            )}
+            )} */}
 
             {error && <p className="text-red-500 mb-2 text-xs">{error}</p>}
 
-            <button className="w-full py-2 rounded bg-pink-600 text-white text-base font-semibold hover:bg-gray-800 transition">
-              Register Store
+            <button className="w-full py-2 rounded bg-pink-600 text-white text-base font-semibold hover:bg-pink-700 transition mt-5">
+              {loading ? "Submitting..." : "Create Account"}
             </button>
           </form>
 
@@ -259,8 +257,10 @@ const StoreSignup = () => {
           </p>
         </div>
       </div>
+
     </>
   );
 };
 
 export default StoreSignup;
+

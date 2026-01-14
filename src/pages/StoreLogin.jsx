@@ -94,7 +94,7 @@ const StoreLogin = () => {
           />
           <h3 className='text-2xl mb-2 font-semibold'>Enter Password</h3>
           <input 
-              className='w-full p-2 border border-gray-300  rounded bg-[#eeeeee] mb-7 text-lg placeholder:text-base focus:outline-none focus:ring-2 focus:ring-gray-400'
+              className='w-full p-2 border border-gray-300  rounded bg-[#eeeeee] mb-2  text-lg placeholder:text-base focus:outline-none focus:ring-2 focus:ring-gray-400'
               type="password"
               placeholder='********' 
               value={password}
@@ -102,7 +102,10 @@ const StoreLogin = () => {
               onClick={() => setError("")}
               required 
           /> 
-          {error && <p className='text-red-500 mb-3 text-sm'>{error}</p>}
+          {error && <p className='text-red-500 mt-7 mb-2 text-sm'>{error}</p>}
+          <Link to="/forgot-password" className="text-sm text-pink-600 hover:underline mb-4 inline-block">
+                      Forgot Password?
+          </Link>
           <button
           className='w-full p-2 rounded mb-4 bg-pink-600 text-white text-xl font-semibold'
           >
