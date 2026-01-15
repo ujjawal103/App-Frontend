@@ -35,25 +35,6 @@ const plans = [
     ],
   },
   {
-    id: "monthly",
-    title: "Monthly Plan",
-    price: "249",
-    amount: 249,
-    duration: "/month",
-    description: "Pay monthly. Cancel anytime.",
-    cta: "Pay ₹249 / month",
-    type: "paid",
-    features: [
-      "Unlimited QR menus",
-      "Unlimited Items",
-      "GST Billing",
-      "Order Management",
-      "Analytics Dashboard",
-      "WhatsApp Support",
-      "Multi-device Cloud Sync"
-    ],
-  },
-  {
     id: "yearly",
     title: "Yearly Access",
     price: "2,499",
@@ -71,6 +52,25 @@ const plans = [
       "Revenue Analytics Dashboard",
       "24/7 WhatsApp Support",
       "Multi-device Cloud Sync",
+    ],
+  },
+  {
+    id: "monthly",
+    title: "Monthly Plan",
+    price: "249",
+    amount: 249,
+    duration: "/month",
+    description: "Pay monthly. Cancel anytime.",
+    cta: "Pay ₹249 / month",
+    type: "paid",
+    features: [
+      "Unlimited QR menus",
+      "Unlimited Items",
+      "GST Billing",
+      "Order Management",
+      "Analytics Dashboard",
+      "WhatsApp Support",
+      "Multi-device Cloud Sync"
     ],
   },
 ];

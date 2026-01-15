@@ -48,7 +48,7 @@ const HomeEndNote = () => {
         {/* SHARE APP (WHATSAPP) */}
         <motion.a
           href={`https://wa.me/?text=${encodeURIComponent(
-            "Check out TAP RESTO 🚀\nManage your business easily.\nDownload here: http://frontend-self-nine-51.vercel.app/tap-resto.apk"
+            "Check out TAP RESTO 🚀\nManage your business easily.\nDownload here: https://www.tapresto.online/tap-resto.apk"
           )}`}
           target="_blank"
           rel="noopener noreferrer"
