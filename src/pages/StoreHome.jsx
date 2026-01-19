@@ -11,6 +11,7 @@ import QrToggleCard from "../components/storeHome/QrToggleCard";
 import LeftMenuDrawer from "../components/LeftMenuDrawer";
 import axios from "axios";
 import MobileTopHeader from "../components/MobileTopHeader";
+import QrPayFirstToggleCard from "../components/storeHome/QrPayFirstToggleCard"
 
 const StoreHome = () => {
   const { store } = useContext(StoreDataContext);
