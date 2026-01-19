@@ -255,6 +255,10 @@ useEffect(() => {
         <QrToggleCard />
       </div>
 
+      <div className="p-3 md:pr-8">
+        <QrPayFirstToggleCard />
+      </div>
+
        <div className="pt-4">
         <HomeEndNote />
         </div>    

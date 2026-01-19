@@ -7,7 +7,7 @@ import {
   FaChair,
   FaClipboardList,
   FaTable,
-  FaCalendarCheck,
+  FaWallet,
   FaFileInvoiceDollar ,
   FaClock,
   FaChartLine,
@@ -313,6 +313,26 @@ export default function FooterNavStore() {
                        <span className="text-sm">Monthly Analytics</span>
                      </Link>
                    </div>
+
+
+
+            {/* QR Settlements */}
+                  <div
+                    className={`hidden md:w-60 md:flex cursor-pointer ${
+                      isActive("/store-settlement")
+                        ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                    }`}
+                  >
+                    <Link
+                      to="/store-settlement"
+                      className={`flex items-center gap-2 text-black md:text-white ${
+                        isActive("/store-settlement") ? "border-t" : ""
+                      } w-full p-4`}
+                    >
+                      <FaWallet size={22} />
+                      <span className="text-sm">QR Settlement's</span>
+                    </Link>
+                  </div>                   
          
          
                    <div
@@ -332,23 +352,23 @@ export default function FooterNavStore() {
                      </Link>
                    </div>
 
-          {/* pricing */}
-          <div
-            className={`hidden md:w-60 md:flex cursor-pointer ${
-              isActive("/pricing")
-                ? "md:bg-gray-800" : "md:hover:bg-gray-800"
-            }`}
-          >
-            <Link
-              to="/pricing"
-              className={`flex items-center gap-2 text-black md:text-white ${
-                isActive("/pricing") ? "border-t" : ""
-              } w-full p-4`}
-            >
-              <FaTags  size={22} />
-              <span className="text-sm">Pricing</span>
-            </Link>
-          </div>
+                  {/* pricing */}
+                  <div
+                    className={`hidden md:w-60 md:flex cursor-pointer ${
+                      isActive("/pricing")
+                        ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                    }`}
+                  >
+                    <Link
+                      to="/pricing"
+                      className={`flex items-center gap-2 text-black md:text-white ${
+                        isActive("/pricing") ? "border-t" : ""
+                      } w-full p-4`}
+                    >
+                      <FaTags  size={22} />
+                      <span className="text-sm">Pricing</span>
+                    </Link>
+                  </div>
 
 
 

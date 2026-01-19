@@ -255,6 +255,12 @@ const StoreSignup = () => {
               Login
             </Link>
           </p>
+          <p className="text-center text-sm mt-3">
+              Admin Login?{" "}
+              <Link to={"/store-login"} className="text-blue-600 hover:underline">
+                  Click Here
+              </Link>
+          </p>
         </div>
       </div>
 
