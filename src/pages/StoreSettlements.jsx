@@ -14,7 +14,7 @@ const StoreSettlements = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(
-    new Date(Date.now() - 86400000).toISOString().split("T")[0]
+    new Date(Date.now()).toISOString().split("T")[0]
   );
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -48,11 +48,19 @@ const StoreSettlements = () => {
 
       {/* DATE PICKER */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">💳 QR Settlements</h2>
+        <div>
+          <h2 className="text-lg font-semibold">💳 QR Settlements</h2>
+          {
+            settlement?.duration &&
+            <p className="text-xs text-gray-500 text-bold">
+            Settelment from {new Date(settlement?.duration?.start).toLocaleString("en-IN")} to {new Date(settlement?.duration?.end).toLocaleString("en-IN")}
+          </p>
+          }
+        </div>
         <input
           type="date"
           value={date}
-          max={new Date(Date.now() - 86400000).toISOString().split("T")[0]}
+          max={new Date(Date.now()).toISOString().split("T")[0]}
           onChange={(e) => setDate(e.target.value)}
           onClick={(e) => e.target.showPicker && e.target.showPicker()}
           className="border p-2 rounded-md text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"

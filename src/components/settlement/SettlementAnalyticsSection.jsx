@@ -57,9 +57,11 @@ const SettlementAnalyticsSection = ({ settlement }) => {
 
       {/* INFO + SUPPORT */}
       <div className="mt-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <p className="text-xs text-gray-500 italic">
-          * A 3% commission is applied as platform fee for this settlement.
+        <p className="text-xs text-pink-500 italic">
+          * A {settlement?.platformFeePercent}% commission was applied as platform fee for this settlement.
         </p>
+
+        
 
         <a
           href={`https://wa.me/${whatsappSupportNumber}?text=${whatsappMessage}`}

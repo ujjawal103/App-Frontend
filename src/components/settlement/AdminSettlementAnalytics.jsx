@@ -61,8 +61,8 @@ const AdminSettlementAnalytics = ({ settlement }) => {
       </div>
 
       {/* NOTE */}
-      <p className="text-xs text-gray-500 mt-3 italic">
-        * Platform commission of {settlement.platformFeePercent}% is deducted from total collection.
+      <p className="text-xs text-pink-500 mt-3 italic">
+        * Platform commission of {settlement?.platformFeePercent}% is deducted from total collection.
       </p>
 
       {/* REMARKS */}

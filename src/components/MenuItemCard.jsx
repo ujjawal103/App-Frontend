@@ -8,9 +8,9 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
   const firstVariant = item.variants.find((v) => v.available);
   const availableVariants = item.variants.filter((variant) => variant.available);
 
-  const getCartQuantity = (variantName) => {
+  const getCartQuantity = (variantId, variantName) => {
     const c = cart.find(
-      (i) => i.itemId === item._id && i.variant === variantName
+      (i) => i.itemId === item._id && i.variant === variantName && i.variantId === variantId
     );
     return c?.quantity || 0;
   };
@@ -78,7 +78,7 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
               </span>
 
               <div className="flex items-center gap-2 pointer-cursor">
-                {!getCartQuantity(firstVariant.name) ? (
+                {!getCartQuantity(firstVariant._id, firstVariant.name) ? (
                   <button
                     onClick={() => addToCart(item, firstVariant)}
                     disabled={!firstVariant.available}
@@ -94,18 +94,18 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                   <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                     <button
                       onClick={() =>
-                        updateQuantity(item._id, firstVariant.name, -1)
+                        updateQuantity(item._id,firstVariant._id, firstVariant.name, -1)
                       }
                       className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       −
                     </button>
                     <span className="px-2 text-sm font-medium">
-                      {getCartQuantity(firstVariant.name)}
+                      {getCartQuantity(firstVariant._id, firstVariant.name)}
                     </span>
                     <button
                       onClick={() =>
-                        updateQuantity(item._id, firstVariant.name, +1)
+                        updateQuantity(item._id,firstVariant._id, firstVariant.name, +1)
                       }
                       className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
@@ -134,7 +134,7 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
               </span>
 
               <div className="flex items-center gap-2">
-                {!getCartQuantity(variant.name) ? (
+                {!getCartQuantity(variant._id , variant.name) ? (
                   <button
                     onClick={() => addToCart(item, variant)}
                     disabled={!variant.available}
@@ -150,18 +150,18 @@ const MenuItemCard = ({ item, addToCart, updateQuantity, cart }) => {
                   <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                     <button
                       onClick={() =>
-                        updateQuantity(item._id, variant.name, -1)
+                        updateQuantity(item._id,variant._id, variant.name, -1)
                       }
                       className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >
                       −
                     </button>
                     <span className="px-2 text-sm font-medium">
-                      {getCartQuantity(variant.name)}
+                      {getCartQuantity(variant._id, variant.name)}
                     </span>
                     <button
                       onClick={() =>
-                        updateQuantity(item._id, variant.name, +1)
+                        updateQuantity(item._id, variant._id, variant.name, +1)
                       }
                       className="px-2 text-lg font-semibold text-pink-600 cursor-pointer"
                     >

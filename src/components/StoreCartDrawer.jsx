@@ -15,11 +15,11 @@ const StoreCartDrawer = ({ open, setOpen, cart, setCart, storeId, store, tables 
   if (!open) return null;
 
   // --- Quantity Functions ---
-  const updateQuantity = (itemId, variant, delta) => {
+  const updateQuantity = (itemId, variantId, variant, delta) => {
     setCart((prevCart) =>
       prevCart
         .map((i) =>
-          i.itemId === itemId && i.variant === variant
+          i.itemId === itemId && i.variant === variant && i.variantId === variantId
             ? { ...i, quantity: i.quantity + delta }
             : i
         )
@@ -27,25 +27,25 @@ const StoreCartDrawer = ({ open, setOpen, cart, setCart, storeId, store, tables 
     );
   };
 
-  const addToCart = (itemId, itemName, variant, price) => {
+  const addToCart = (itemId, itemName, variantId, variant, price) => {
     setCart((prevCart) => {
       const exists = prevCart.find(
-        (i) => i.itemId === itemId && i.variant === variant
+        (i) => i.itemId === itemId && i.variant === variant && i.variantId === variantId
       );
       if (exists) {
         return prevCart.map((i) =>
-          i.itemId === itemId && i.variant === variant
+          i.itemId === itemId && i.variant === variant && i.variantId === variantId
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
       } else {
-        return [...prevCart, { itemId, itemName, variant, price, quantity: 1 }];
+        return [...prevCart, { itemId, itemName,variantId, variant, price, quantity: 1 }];
       }
     });
   };
 
-  const getCartQuantity = (itemId, variant) => {
-    const c = cart.find((i) => i.itemId === itemId && i.variant === variant);
+  const getCartQuantity = (itemId, variantId, variant) => {
+    const c = cart.find((i) => i.itemId === itemId && i.variant === variant && i.variantId === variantId);
     return c?.quantity || 0;
   };
 
@@ -65,6 +65,7 @@ const groupedItems = cart.reduce((acc, curr) => {
 
   acc[curr.itemId].variants.push({
     type: curr.variant,
+    variantId: curr.variantId,
     quantity: curr.quantity,
     price: curr.price,
     total: variantTotal,
@@ -211,10 +212,10 @@ const handleCheckout = async () => {
                     </span>
 
                     <div className="flex items-center gap-2">
-                      {!getCartQuantity(group.itemId, v.type) ? (
+                      {!getCartQuantity(group.itemId,v.variantId, v.type) ? (
                         <button
                           onClick={() =>
-                            addToCart(group.itemId, group.itemName, v.type, v.price)
+                            addToCart(group.itemId, group.itemName,v.variantId, v.type, v.price)
                           }
                           className="px-3 py-1 rounded text-sm bg-pink-600 text-white"
                         >
@@ -224,18 +225,18 @@ const handleCheckout = async () => {
                         <div className="flex items-center border border-pink-600 rounded-md px-2 py-1 bg-gray-50">
                           <button
                             onClick={() =>
-                              updateQuantity(group.itemId, v.type, -1)
+                              updateQuantity(group.itemId,v.variantId, v.type, -1)
                             }
                             className="px-2 text-lg font-semibold text-pink-600"
                           >
                             −
                           </button>
                           <span className="px-2 text-sm font-medium">
-                            {getCartQuantity(group.itemId, v.type)}
+                            {getCartQuantity(group.itemId,v.variantId, v.type)}
                           </span>
                           <button
                             onClick={() =>
-                              updateQuantity(group.itemId, v.type, +1)
+                              updateQuantity(group.itemId,v.variantId, v.type, +1)
                             }
                             className="px-2 text-lg font-semibold text-pink-600"
                           >
@@ -248,7 +249,7 @@ const handleCheckout = async () => {
 
                   {/* Per-item total */}
                   <div className="text-xs text-gray-500 text-right mt-0.5">
-                    ₹{(v.price * getCartQuantity(group.itemId, v.type)).toFixed(2)}
+                    ₹{(v.price * getCartQuantity(group.itemId,v.variantId, v.type)).toFixed(2)}
                   </div>
                 </div>
               ))}

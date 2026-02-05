@@ -41,7 +41,7 @@ export default function BackButtonHandler() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const ROOT_PAGES = ["/store-home", "/store-login"];
+  const ROOT_PAGES = ["/store-home", "/store-login", "/admin-login" , "/admin-signup" , "/admin-dashboard"];
 
   useEffect(() => {
     const remove = App.addListener("backButton", () => {

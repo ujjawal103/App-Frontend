@@ -1,11 +1,11 @@
 import { FaWhatsapp } from "react-icons/fa";
 
-const AdminOrderCardExtra = ({ order }) => {
+const AdminOrderCardExtra = ({ order , tableNumber="0" }) => {
   return (
     <div className="mt-2 text-xs text-gray-600 space-y-1">
       <div className="flex justify-between items-center">
           <h3 className="font-medium text-sm">
-            Table #{order.tableId?.tableNumber || tableNumber || "N/A"}
+            Table #{order?.tableId?.tableNumber || tableNumber || "N/A"}
           </h3>
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -21,8 +21,8 @@ const AdminOrderCardExtra = ({ order }) => {
             {order.status}
           </span>
         </div>
-      <p className="text-gray-600 mt-1 text-xs">👤 {order.username || "Guest"}</p>
-      <p className="text-gray-600 text-xs flex items-center gap-1"><FaWhatsapp /> {order.whatsapp || "Not provided"}</p>
+      <p className="text-gray-600 mt-1 text-xs">👤 {order?.username || "Guest"}</p>
+      <p className="text-gray-600 text-xs flex items-center gap-1"><FaWhatsapp /> {order?.whatsapp || "Not provided"}</p>
       <p className="text-gray-500 text-xs">
           {new Date(order.createdAt).toLocaleString()}
       </p>

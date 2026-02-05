@@ -121,7 +121,7 @@ const handlePrint = async () => {
     await PosPrinter.printText({ text: billText });
 
     toast.dismiss();
-    toast.success(`Printed on ${printer.name}`);
+    toast.success(`Printed on ${printer.name || "your printer"}`);
   } catch (err) {
     toast.dismiss();
 

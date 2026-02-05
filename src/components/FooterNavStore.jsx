@@ -19,7 +19,8 @@ import {
   FaShieldAlt,
   FaUndoAlt,
   FaFileContract,
-  FaTags    
+  FaTags,
+  FaBoxOpen    
 } from "react-icons/fa";
 import axios from "axios";
 import Loading from "./Loading";
@@ -314,6 +315,23 @@ export default function FooterNavStore() {
                      </Link>
                    </div>
 
+          {/* Inventry */}
+          <div
+            className={`hidden md:w-60 md:flex cursor-pointer ${
+              isActive("/inventry-management")
+                ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+            }`}
+          >
+            <Link
+              to="/inventry-management"
+              className={`flex items-center gap-2 text-black md:text-white ${
+                isActive("/inventry-management") ? "border-t" : ""
+              } w-full p-4`}
+            >
+              <FaBoxOpen size={22} />
+              <span className="text-sm">Inventries / Stock</span>
+            </Link>
+          </div>
 
 
             {/* QR Settlements */}

@@ -103,13 +103,20 @@ const AdminSettlementPage = () => {
           <p className="text-xs text-gray-500">
             Store ID: {storeId}
           </p>
+          {
+            settlement?.duration &&
+            <p className="text-xs text-gray-500 text-bold">
+            Settelment from {new Date(settlement?.duration?.start).toLocaleString("en-IN")} to {new Date(settlement?.duration?.end).toLocaleString("en-IN")}
+          </p>
+          }
         </div>
 
         <div className="flex items-center justify-between gap-2">
           <input
             type="date"
             value={date}
-            max={new Date(Date.now() - 86400000).toISOString().split("T")[0]}
+            // max={new Date(Date.now() - 86400000).toISOString().split("T")[0]}
+            max={new Date(Date.now()).toISOString().split("T")[0]}
             onChange={handleDateChange}
             onClick={(e) => e.target.showPicker && e.target.showPicker()}
             className="border px-2 py-1 rounded-md text-sm"

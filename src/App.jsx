@@ -45,10 +45,11 @@ import LastOrderPage from '../../frontend/src/pages/LastOrderPage'
 import OtpVerifyWrapper from './components/otp/OtpVerifyWrapper'
 import ForgotPassword from './components/otp/forgotPassword'
 import ResetPassword from './components/otp/ResetPassword'
-import StoreSettlements from './pages/StoreSettlement'
+import StoreSettlements from './pages/StoreSettlements'
 import AdminSettlementPage from './pages/admin/AdminSettlementPage'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStoreDetails from './pages/admin/AdminStoreDetails'
+import InventoryDashboard from './pages/InventryDashboard'
 
 
 
@@ -226,6 +227,13 @@ const navigate = useNavigate();
           <Route path='/table-management' element={
           <StoreProtectedWrapper>
             <TableManagement />
+          </StoreProtectedWrapper>
+          } />
+
+
+          <Route path='/inventry-management' element={
+          <StoreProtectedWrapper>
+            <InventoryDashboard />
           </StoreProtectedWrapper>
           } />
 
