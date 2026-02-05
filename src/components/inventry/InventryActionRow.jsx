@@ -1,12 +1,16 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, Loader2 } from "lucide-react";
 
 const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
   const [addQty, setAddQty] = useState("");
   const [reduceQty, setReduceQty] = useState("");
   const [threshold, setThreshold] = useState("");
+
+  const [adding, setAdding] = useState(false);
+  const [reducing, setReducing] = useState(false);
+  const [updatingThreshold, setUpdatingThreshold] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
@@ -19,6 +23,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
     }
 
     try {
+      setAdding(true);
+
       await axios.patch(
         `${BASE_URL}inventries/add/${itemId}/${variant._id}`,
         { quantity: qty },
@@ -30,6 +36,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
       onRefresh();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add stock");
+    } finally {
+      setAdding(false);
     }
   };
 
@@ -41,6 +49,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
     }
 
     try {
+      setReducing(true);
+
       await axios.patch(
         `${BASE_URL}inventries/reduce/${itemId}/${variant._id}`,
         { quantity: qty },
@@ -52,6 +62,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
       onRefresh();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to reduce stock");
+    } finally {
+      setReducing(false);
     }
   };
 
@@ -63,6 +75,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
     }
 
     try {
+      setUpdatingThreshold(true);
+
       await axios.patch(
         `${BASE_URL}inventries/threshold/${itemId}/${variant._id}`,
         { lowThreshold: value },
@@ -74,6 +88,8 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
       onRefresh();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update threshold");
+    } finally {
+      setUpdatingThreshold(false);
     }
   };
 
@@ -92,12 +108,14 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
             value={addQty}
             onChange={(e) => setAddQty(e.target.value)}
             className="border rounded px-2 py-1 w-20"
+            disabled={adding}
           />
           <button
             onClick={handleAddStock}
-            className="bg-emerald-600 text-white px-3 py-1 rounded"
+            disabled={adding}
+            className="bg-emerald-600 text-white px-3 py-1 rounded flex items-center gap-1 disabled:opacity-60"
           >
-            Add
+            {adding ? <Loader2 size={14} className="animate-spin" /> : "Add"}
           </button>
         </div>
 
@@ -113,12 +131,14 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
             value={reduceQty}
             onChange={(e) => setReduceQty(e.target.value)}
             className="border rounded px-2 py-1 w-20"
+            disabled={reducing}
           />
           <button
             onClick={handleReduceStock}
-            className="bg-rose-600 text-white px-2 py-1 rounded"
+            disabled={reducing}
+            className="bg-rose-600 text-white px-2 py-1 rounded flex items-center gap-1 disabled:opacity-60"
           >
-            Reduce
+            {reducing ? <Loader2 size={14} className="animate-spin" /> : "Reduce"}
           </button>
         </div>
       </div>
@@ -131,13 +151,19 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
           placeholder="Low stock threshold"
           value={threshold}
           onChange={(e) => setThreshold(e.target.value)}
-          className="flex-1 border rounded py-1 pl-1"
+          className="flex-1 border rounded py-1 pl-2"
+          disabled={updatingThreshold}
         />
         <button
           onClick={handleUpdateThreshold}
-          className="bg-pink-600 text-white px-5  py-1 rounded whitespace-nowrap"
+          disabled={updatingThreshold}
+          className="bg-pink-600 text-white px-5 py-1 rounded whitespace-nowrap flex items-center gap-1 disabled:opacity-60"
         >
-          Set low Stock Alert
+          {updatingThreshold ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            "Set Low stock Alert"
+          )}
         </button>
       </div>
     </div>

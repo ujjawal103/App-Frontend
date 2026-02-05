@@ -150,24 +150,36 @@ const handleCheckout = async () => {
     setOpen(false);
 
   } catch (err) {
-    // 🟡 Offline mode
-    try {
-      await savePendingOrder(orderPayload);
-      toast("Order saved offline. Will sync when online.", { icon: "📡" });
+    const isOffline =
+      !navigator.onLine ||
+      err.code === "ERR_NETWORK" ||
+      !err.response;
 
-      navigate("/order-success");
-      setCart([]);
-      setOpen(false);
+    // 🟡 SAVE OFFLINE ONLY IF NETWORK ISSUE
+    if (isOffline) {
+      try {
+        await savePendingOrder(orderPayload);
+        toast("Order saved offline. Will sync when online.", { icon: "📡" });
 
-    } catch (offlineErr) {
-      toast.error("Order could not be saved! Please retry.");
-      console.error("Critical Order Save Error:", offlineErr);
-      setLoading(false);
-      return;
+        navigate("/order-success");
+        setCart([]);
+        setOpen(false);
+      } catch (offlineErr) {
+        toast.error("Order could not be saved offline. Please retry.");
+        console.error("Offline save failed:", offlineErr);
+      }
+    } else {
+      // 🔴 REAL BACKEND ERROR → SHOW MESSAGE
+      const message = err.response?.data?.message;
+       if (message && message.toLowerCase().includes("valid 10-digit")) {
+              setWhatsappError(message);
+        } else {
+              toast.error(message || "Failed to create order");
+        }
     }
+  } finally {
+    setLoading(false);
   }
-
-  setLoading(false);
 };
 
 
