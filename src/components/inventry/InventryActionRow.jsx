@@ -153,6 +153,7 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
           onChange={(e) => setThreshold(e.target.value)}
           className="flex-1 border rounded py-1 pl-2"
           disabled={updatingThreshold}
+          required
         />
         <button
           onClick={handleUpdateThreshold}
