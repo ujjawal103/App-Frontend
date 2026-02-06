@@ -69,6 +69,11 @@ const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {
 
   /* ================= UPDATE THRESHOLD ================= */
   const handleUpdateThreshold = async () => {
+    // ⛔ block empty input
+    if (threshold === "" || threshold === null) {
+      return toast.error("Enter a threshold value");
+    }
+
     const value = Number(threshold);
     if (!Number.isInteger(value) || value < 0) {
       return toast.error("Invalid threshold value");
