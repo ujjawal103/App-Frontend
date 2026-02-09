@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import Loading from "../../components/Loading";
 import FooterNavAdmin from "../../components/FooterNavAdmin";
 import AdminSettlementTable from "../../components/settlement/AdminSettlementTable";
+import { FaWallet } from "react-icons/fa";
 
 const AdminStoreDetails = () => {
   const { storeId } = useParams();
@@ -12,6 +13,10 @@ const AdminStoreDetails = () => {
 
   const [store, setStore] = useState(null);
   const [settlements, setSettlements] = useState([]);
+
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [loadingWallet, setLoadingWallet] = useState(false);
+
 
   const [loadingStore, setLoadingStore] = useState(false);
   const [loadingSettlements, setLoadingSettlements] = useState(false);
@@ -75,9 +80,31 @@ const AdminStoreDetails = () => {
     }
   };
 
+
+
+  const fetchWallet = async () => {
+  try {
+    setLoadingWallet(true);
+
+    const { data } = await axios.get(
+      `${BASE_URL}wallets/walletsummary/${storeId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setWalletBalance(data.totalPendingAmount || 0);
+  } catch (error) {
+    console.error("Wallet Fetch Error:", error.response?.data || error.message);
+    toast.error("Failed to load wallet");
+  } finally {
+    setLoadingWallet(false);
+  }
+};
+
+
   useEffect(() => {
     fetchStore();
     fetchLast7Settlements();
+    fetchWallet();
   }, [storeId]);
 
   if (loadingStore) {
@@ -97,24 +124,36 @@ const AdminStoreDetails = () => {
 
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
-        <div className="flex items-center gap-3">
-          <img
-            src={store.storeDetails?.photo || "/store.png"}
-            className="w-14 h-14 rounded-xl object-cover border"
-          />
-          <div>
-            <h1 className="text-xl font-semibold">{store.storeName}</h1>
-            <p className="text-xs text-gray-500">{store.email}</p>
-          </div>
+      <div className="flex items-center gap-3">
+        <img
+          src={store.storeDetails?.photo || "/store.png"}
+          className="w-14 h-14 rounded-xl object-cover border"
+        />
+        <div>
+          <h1 className="text-xl font-semibold">{store.storeName}</h1>
+          <p className="text-xs text-gray-500">{store.email}</p>
         </div>
+      </div>
 
+      {/* ACTION BUTTONS */}
+      <div className="flex gap-4">
         <button
           onClick={() => navigate(`/admin/settlements/${store._id}`)}
           className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700"
         >
           View Settlements
         </button>
+
+        <button
+          onClick={() => navigate(`/admin/wallets/${store._id}`)}
+          className="bg-black text-yellow-400 px-4 py-2 rounded-md text-sm hover:bg-gray-900"
+        >
+          <FaWallet className="inline mb-0.5 mr-2" />
+          View Due Balance
+        </button>
       </div>
+    </div>
+
 
       {/* INFO GRID */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -125,6 +164,7 @@ const AdminStoreDetails = () => {
         <InfoCard title="GST Applicable" value={store.gstSettings?.gstApplicable ? "Yes" : "No"} color="purple" />
         <InfoCard title="Restaurant Charge" value={store.gstSettings?.restaurantChargeApplicable ? `₹${store.gstSettings.restaurantCharge}` : "Not Applied"} color="indigo" />
         <InfoCard title="Joined On" value={new Date(store.createdAt).toLocaleDateString("en-IN")} color="slate" />
+        <InfoCard title="Wallet Balance" value={loadingWallet ? "Loading..." : `₹${walletBalance}`} color="yellow" />
       </div>
 
       {/* ADDRESS */}

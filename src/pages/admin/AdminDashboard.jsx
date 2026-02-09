@@ -8,19 +8,19 @@ import Loading from "../../components/Loading";
 
 const AdminDashboard = () => {
   const [stores, setStores] = useState([]);
+  const [wallets, setWallets] = useState({});
   const [loading, setLoading] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  /* ================= FETCH STORES ================= */
   const fetchStores = async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`${BASE_URL}admin/stores`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setStores(data.stores || []);
     } catch (err) {
@@ -30,8 +30,22 @@ const AdminDashboard = () => {
     }
   };
 
+  /* ================= FETCH WALLETS (ONE CALL) ================= */
+  const fetchWallets = async () => {
+    try {
+      const { data } = await axios.get(`${BASE_URL}admin/wallets`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setWallets(data.wallets || {});
+    } catch {
+      toast.error("Failed to fetch wallet balances");
+    }
+  };
+
   useEffect(() => {
     fetchStores();
+    fetchWallets();
   }, []);
 
   return (
@@ -50,7 +64,10 @@ const AdminDashboard = () => {
           </div>
 
           <button
-            onClick={fetchStores}
+            onClick={() => {
+              fetchStores();
+              fetchWallets();
+            }}
             className="bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-700 transition"
           >
             Refresh
@@ -79,6 +96,7 @@ const AdminDashboard = () => {
               <AdminStoreCard
                 key={store._id}
                 store={store}
+                walletBalance={wallets[store._id] || 0}
                 onClick={() =>
                   navigate(`/admin/stores/${store._id}`)
                 }
