@@ -123,37 +123,35 @@ export default function AccountDrawerStore({ isOpen, onClose }) {
         {/* Store Info */}
         <div className="p-6 flex-1 overflow-y-auto space-y-4 text-sm">
           {/* Store Photo */}
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative">
-              <img
-                src={
-                  store?.storeDetails?.photo ||
-                  "/default-store-photo.png"
-                }
-                alt="Store"
-                className="rounded-full border-4 border-pink-500 object-cover w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40"
-              />
-
-              {/* Edit & Delete Buttons */}
-              <div className="flex justify-center gap-4 mt-3">
-                <button
-                  onClick={handleEditPhoto}
-                  className="p-2 text-blue-600 rounded-full hover:bg-blue-200 transition flex gap-2 items-center"
-                  title="Edit Photo"
-                >
-                  <Edit className="text-blue-500 w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="">Edit Photo</span>
-                </button>
-                {/* <button
-                  onClick={handleDeletePhoto}
-                  className="p-2 bg-red-600 rounded-full hover:bg-red-700 transition"
-                  title="Delete Photo"
-                >
-                  <Trash2 className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-                </button> */}
-              </div>
+            <div className="flex flex-col items-center mb-6">
+                <div className="relative flex flex-col items-center">
+                          <img
+                            src={store?.storeDetails?.photo || "/default-store-photo.png"}
+                            alt="Store"
+                            className="rounded-full border-4 border-pink-500 object-cover
+                              w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40"
+                          />
+          
+                          {/* Edit + Wallet */}
+                          <div className="mt-4 flex flex-col lg:flex-row items-center justify-center gap-3">
+                            <button
+                              onClick={handleEditPhoto}
+                              className="px-4 py-2 text-blue-600 rounded-full hover:bg-blue-200  lg:bg-blue-100 cursor-pointer  lg:text-pink-600 transition flex gap-2 items-center text-sm"
+                            >
+                              <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
+                              <span>Edit Photo</span>
+                            </button>
+          
+                            <button
+                              onClick={() => navigate("/store-wallet")}
+                              className="px-4 py-2 bg-pink-600 text-yellow-200 rounded-full hover:bg-pink-700 cursor-pointer transition flex gap-2 items-center text-sm"
+                            >
+                              <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
+                              <span>My Wallet</span>
+                            </button>
+                          </div>
+                </div>
             </div>
-          </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-3">
