@@ -123,7 +123,7 @@ const fetchTables = async () => {
 
   return (
     <>
-      {loading && <Loading message={message} />}
+      {/* {loading && <Loading message={message} />} */}
 
       <div className="w-full min-h-screen bg-gray-100 md:pl-64 md:pt-8 p-4 mb-20 md:mb-0">
         {/* ✅ Fixed Header */}

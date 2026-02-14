@@ -10,6 +10,7 @@ import { Capacitor } from "@capacitor/core";
 import { getStoreItems } from "../offline/storeItemsDB";
 import { getStoreTables } from "../offline/storeTablesDB";
 import CategoryFilterQRBar from "../components/CategoryFilterQRBar";
+import MenuItemCardSkeleton from "../components/MenuItemCardSkeleton";
 
 
 
@@ -228,7 +229,7 @@ const fetchTables = async () => {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
 
   return (
     <div className="w-full md:pl-65 mb-20 md:mb-0 min-h-[100vh] bg-gray-200">
@@ -255,19 +256,25 @@ const fetchTables = async () => {
 
       <div className="px-4 pb-18 md:pb-22">
         <div className="space-y-3">
-        {filteredItems.length === 0 ? (
-          <p className="text-center text-gray-500">No items found</p>
-        ) : (
-          filteredItems.map((item) => (
-            <MenuItemCard
-              key={item._id}
-              item={item}
-              addToCart={addToCart}
-              updateQuantity={updateQuantity}
-              cart={cart}
-            />
-          ))
-        )}
+        {loading ? (
+            <>
+              {[...Array(6)].map((_, index) => (
+                <MenuItemCardSkeleton key={index} />
+              ))}
+            </>
+          ) : filteredItems.length === 0 ? (
+            <p className="text-center text-gray-500">No items found</p>
+          ) : (
+            filteredItems.map((item) => (
+              <MenuItemCard
+                key={item._id}
+                item={item}
+                addToCart={addToCart}
+                updateQuantity={updateQuantity}
+                cart={cart}
+              />
+            ))
+          )}
       </div>
       </div>
 
