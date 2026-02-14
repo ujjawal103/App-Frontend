@@ -1,6 +1,6 @@
 // FooterNavStore.jsx
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState , useContext } from "react";
+import { Link, useLocation , useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaUtensils,
@@ -28,76 +28,131 @@ import toast from "react-hot-toast";
 import AccountDrawerStore from "./AccountDrawerStore";
 import { Capacitor } from "@capacitor/core";
 import { getStoreProfile, saveStoreProfile , deleteStoreProfile } from "../offline/storeProfileDB";
+import { StoreDataContext } from "../context/StoreContext";
 
 export default function FooterNavStore() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [profileFetched, setProfileFetched] = useState(null);
+  const { store, setStore } = useContext(StoreDataContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleProfile = async () => {
-  setLoading(true);
-  setMessage("Fetching profile...");
+//   const handleProfile = async () => {
+//   setLoading(true);
+//   setMessage("Fetching profile...");
 
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}stores/profile`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+//   try {
+//     const response = await axios.get(
+//       `${import.meta.env.VITE_BASE_URL}stores/profile`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//       }
+//     );
 
-    // ⭐ Online success
-    setProfileFetched(response.data?.store);
+//     // ⭐ Online success
+//     setProfileFetched(response.data?.store);
+//     setDrawerOpen(true);
+
+//     // ⭐ Save to offline DB
+//     await saveStoreProfile(response.data?.store);
+
+//   } catch (error) {
+
+//     // ⭐ Token expired → force logout
+//     if (error.response?.status === 401) {
+//       localStorage.removeItem("token");
+//       await deleteStoreProfile();
+
+//       setProfileFetched(null);
+//       setDrawerOpen(false);
+//       setMessage("");
+//       setLoading(false);
+
+//       toast.error("Session expired. Please login again.");
+//       navigate("/store-login");
+//       return;
+//     }
+
+//     // ⭐ Offline fallback
+//     if (Capacitor.isNativePlatform()) {
+//       const cached = await getStoreProfile();
+//       console.log("Cached profile:", cached);
+
+//       if (cached) {
+//         setProfileFetched(cached);
+//         setDrawerOpen(true);
+//         setMessage("");
+//         setLoading(false);
+//         return;
+//       }
+//     }
+
+//     // ⭐ No offline data → error
+//     setProfileFetched(null);
+//     setDrawerOpen(false);
+//     toast.error("Unable to fetch profile!");
+
+//   }
+
+//   setLoading(false);
+//   setMessage("");
+// };
+
+
+
+   const handleProfile = async () => {
+    // 🔥 1️⃣ Open instantly using context
+    if (!store?._id) return;
     setDrawerOpen(true);
 
-    // ⭐ Save to offline DB
-    await saveStoreProfile(response.data?.store);
+    // 🔥 2️⃣ Silent background refresh (non-blocking)
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}stores/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+      );
 
-  } catch (error) {
+      setProfileFetched(response.data?.store);
 
-    // ⭐ Token expired → force logout
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      await deleteStoreProfile();
+      const updatedStore = response.data?.store;
 
-      setProfileFetched(null);
-      setDrawerOpen(false);
-      setMessage("");
-      setLoading(false);
+      setStore(updatedStore);
 
-      toast.error("Session expired. Please login again.");
-      navigate("/store-login");
-      return;
-    }
+      if (Capacitor.isNativePlatform()) {
+        await saveStoreProfile(updatedStore);
+      }
 
-    // ⭐ Offline fallback
-    if (Capacitor.isNativePlatform()) {
-      const cached = await getStoreProfile();
-      console.log("Cached profile:", cached);
+    } catch (error) {
 
-      if (cached) {
-        setProfileFetched(cached);
-        setDrawerOpen(true);
-        setMessage("");
-        setLoading(false);
+      // Token expired
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        await deleteStoreProfile();
+        setStore({});
+        setDrawerOpen(false);
+        toast.error("Session expired. Please login again.");
+        navigate("/store-login");
         return;
       }
+
+      // Offline fallback silently
+      if (Capacitor.isNativePlatform()) {
+        const cached = await getStoreProfile();
+        if (cached) {
+          setStore(cached);
+        }
+      }
     }
+  };
 
-    // ⭐ No offline data → error
-    setProfileFetched(null);
-    setDrawerOpen(false);
-    toast.error("Unable to fetch profile!");
-
-  }
-
-  setLoading(false);
-  setMessage("");
-};
 
 
   const isActive = (path) => location.pathname === path;

@@ -32,42 +32,101 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
   const printRef = useRef(null);
 
 
-  function generateBillText(order) {
+//   function generateBillText(order) {
+//   let text = "";
+
+//   text += `${order.storeId.storeName}\n`;
+//   text += "--------------------------\n";
+//   text += `${order.storeId.storeDetails.address}\n`;
+//   text += `Phone: ${order.storeId.storeDetails.phoneNumber}\n\n`;
+
+//   text += "--------------------------\n";
+//   text += `Order ID: ${order._id}\n`;
+//   text += `Table: ${order.tableId?.tableNumber || "N/A"}\n`;
+//   text += `Date: ${new Date(order.createdAt).toLocaleString()}\n`;
+//   text += "--------------------------\n";
+
+//   order.items.forEach(item => {
+//     text += `${item.itemName}\n`;
+//     item.variants.forEach(v => {
+//       text += `  ${v.type} x ${v.quantity}    ₹${v.total.toFixed(2)}\n`;
+//     });
+//   });
+
+//   text += "--------------------------\n";
+//   text += `Subtotal        ₹${order.subTotal.toFixed(2)}\n`;
+
+//   if (order.gstApplicable) {
+//     text += `GST (${order.gstRate * 100}%)        ₹${order.gstAmount.toFixed(2)}\n`;
+//   }
+
+//   if (order.restaurantChargeApplicable) {
+//     text += `Service Charge  ₹${order.restaurantChargeAmount.toFixed(2)}\n`;
+//   }
+
+//   text += "--------------------------\n";
+//   text += `TOTAL           ₹${order.totalAmount.toFixed(2)}\n`;
+//   text += "--------------------------\n";
+//   text += "Thank you for visiting 🙂\n\n\n";
+
+//   return text;
+// }
+
+function generateBillText(order) {
+  const LINE_WIDTH = 32;
+
+  const formatLine = (left, right) => {
+    const rightStr = right.toString();
+    const spaceCount = LINE_WIDTH - left.length - rightStr.length;
+    const spaces = " ".repeat(spaceCount > 0 ? spaceCount : 1);
+    return left + spaces + rightStr + "\n";
+  };
+
   let text = "";
 
-  text += `${order.storeId.storeName}\n`;
-  text += "--------------------------\n";
-  text += `${order.storeId.storeDetails.address}\n`;
-  text += `Phone: ${order.storeId.storeDetails.phoneNumber}\n\n`;
+  text += order.storeId.storeName + "\n";
+  text += "--------------------------------\n";
+  text += order.storeId.storeDetails.address + "\n";
+  text += "Phone: " + order.storeId.storeDetails.phoneNumber + "\n";
+  text += "--------------------------------\n";
 
-  text += "--------------------------\n";
-  text += `Order ID: ${order._id}\n`;
-  text += `Table: ${order.tableId?.tableNumber || "N/A"}\n`;
-  text += `Date: ${new Date(order.createdAt).toLocaleString()}\n`;
-  text += "--------------------------\n";
+  text += "Order ID: " + order._id + "\n";
+  text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+  text += "--------------------------------\n";
 
   order.items.forEach(item => {
-    text += `${item.itemName}\n`;
+    text += item.itemName + "\n";
+
     item.variants.forEach(v => {
-      text += `  ${v.type} x ${v.quantity}    ₹${v.total.toFixed(2)}\n`;
+      const price = "Rs " + v.total.toFixed(2);
+      const name = `  ${v.type} x ${v.quantity}`;
+      text += formatLine(name, price);
     });
   });
 
-  text += "--------------------------\n";
-  text += `Subtotal        ₹${order.subTotal.toFixed(2)}\n`;
+  text += "--------------------------------\n";
+
+  text += formatLine("Subtotal", "Rs " + order.subTotal.toFixed(2));
 
   if (order.gstApplicable) {
-    text += `GST (${order.gstRate * 100}%)        ₹${order.gstAmount.toFixed(2)}\n`;
+    text += formatLine(
+      `GST (${order.gstRate * 100}%)`,
+      "Rs " + order.gstAmount.toFixed(2)
+    );
   }
 
   if (order.restaurantChargeApplicable) {
-    text += `Service Charge  ₹${order.restaurantChargeAmount.toFixed(2)}\n`;
+    text += formatLine(
+      "Service Charge",
+      "Rs " + order.restaurantChargeAmount.toFixed(2)
+    );
   }
 
-  text += "--------------------------\n";
-  text += `TOTAL           ₹${order.totalAmount.toFixed(2)}\n`;
-  text += "--------------------------\n";
-  text += "Thank you for visiting 🙂\n\n\n";
+  text += "--------------------------------\n";
+  text += formatLine("TOTAL", "Rs " + order.totalAmount.toFixed(2));
+  text += "--------------------------------\n";
+
+  text += "Thank you for visiting\n\n";
 
   return text;
 }

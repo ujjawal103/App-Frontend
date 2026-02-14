@@ -145,7 +145,7 @@ const handleAddCategory = () => {
 
   return (
     <>
-      {loading && <Loading message={message} />}
+      {/* {loading && <Loading message={message} />} */}
 
       <div className=" min-h-screen bg-gray-100 md:pl-64 md:pt-8 p-0 md:p-4 mb-20 md:mb-0">
         {/* ✅ Fixed Header */}
@@ -199,7 +199,7 @@ const handleAddCategory = () => {
 
         {/* ✅ Item List */}
         <div className="p-4 pt-0 md:p-0">
-          <ItemList items={filteredItems} onRefresh={fetchItems} />
+          <ItemList items={filteredItems} onRefresh={fetchItems} loadingItems={loading} setItems={setItems}/>
         </div>
       </div>
 
