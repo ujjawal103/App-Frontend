@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { StoreDataContext } from "../../context/StoreContext";
 
 const QrPayFirstToggleCard = () => {
-  const { store, updateStore } = useContext(StoreDataContext);
+  const { store, setStore } = useContext(StoreDataContext);
   const [loading, setLoading] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -27,7 +27,7 @@ const QrPayFirstToggleCard = () => {
         }
       );
 
-      updateStore({
+      setStore({
         ...store,
         qrPayFirstEnabled: data.qrPayFirstEnabled,
       });
