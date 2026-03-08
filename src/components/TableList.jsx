@@ -23,7 +23,7 @@ const TableList = ({ tables, loading, onRefresh }) => {
     );
 
   return (
-    <div className="w-full flex flex-wrap row-gap-2 justify-between md:justify-start">
+    <div className="w-full flex flex-wrap row-gap-2 gap-2 md:justify-start">
       {tables.map((table) => (
         <TableCard key={table._id} table={table} onRefresh={onRefresh} />
       ))}

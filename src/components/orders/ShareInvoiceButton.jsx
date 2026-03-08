@@ -78,7 +78,7 @@ const ShareInvoiceButton = ({ orderId, text, onWhatsappMissing, currOrder , mark
       {loading ? (
         <>
           <Loader2 className="w-3 h-3 animate-spin" />
-          Generating invoice
+          Generating..
         </>
       ) : (
         <div className="flex gap-2"><span>{text}</span><FaWhatsapp className="w-4 h-4" /></div>

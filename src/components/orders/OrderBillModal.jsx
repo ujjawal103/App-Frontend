@@ -131,6 +131,35 @@ function generateBillText(order) {
   return text;
 }
 
+function generateKOTText(order) {
+  let text = "";
+
+  text += "KITCHEN ORDER TICKET\n";
+  text += "--------------------------------\n";
+
+  text += order.storeId.storeName + "\n";
+  text += "--------------------------------\n";
+
+  text += "Order: " + order._id + "\n";
+  text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+  text += "--------------------------------\n";
+
+  order.items.forEach(item => {
+    text += item.itemName + "\n";
+
+    item.variants.forEach(v => {
+      text += `  ${v.type} x ${v.quantity}\n`;
+    });
+  });
+
+  text += "--------------------------------\n";
+  text += new Date(order.createdAt).toLocaleString() + "\n";
+
+  text += "\n\n\n";
+
+  return text;
+}
+
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -160,6 +189,7 @@ function generateBillText(order) {
     );
   }
 
+
 const handlePrint = async () => {
   try {
     if (!Capacitor.isNativePlatform()) {
@@ -167,20 +197,26 @@ const handlePrint = async () => {
       return;
     }
 
-    toast.dismiss();
-    toast.loading("Checking printer...");
+    const savedPrinter = localStorage.getItem("selectedPrinter");
 
-    const printer = await PosPrinter.checkPrinter();
+    if (!savedPrinter) {
+      toast.error("No printer selected. Please select a printer first.");
+      return;
+    }
 
-    toast.dismiss();
-    toast.loading("Printing...");
+    const printer = JSON.parse(savedPrinter);
+
+    toast.loading("Printing bill...");
 
     const billText = generateBillText(order);
 
-    await PosPrinter.printText({ text: billText });
+    await PosPrinter.printText({
+      address: printer.address,   // 🔥 MOST IMPORTANT
+      text: billText,
+    });
 
     toast.dismiss();
-    toast.success(`Printed on ${printer.name || "your printer"}`);
+    toast.success(`Printed on ${printer.name}`);
   } catch (err) {
     toast.dismiss();
 
@@ -192,9 +228,81 @@ const handlePrint = async () => {
       return;
     }
 
-    toast.error(msg || "No printer connected");
+    toast.error("Printing failed");
+  }
+};  
+
+const handleKOTPrint = async () => {
+  try {
+    if (!Capacitor.isNativePlatform()) {
+      toast.error("Printing available only in app");
+      return;
+    }
+
+    const savedPrinter = localStorage.getItem("selectedPrinter");
+
+    if (!savedPrinter) {
+      toast.error("No printer selected.");
+      return;
+    }
+
+    const printer = JSON.parse(savedPrinter);
+
+    toast.loading("Printing KOT...");
+
+    const kotText = generateKOTText(order);
+
+    await PosPrinter.printText({
+      address: printer.address,
+      text: kotText,
+    });
+
+    toast.dismiss();
+    toast.success("KOT Printed");
+
+  } catch (err) {
+    toast.dismiss();
+    toast.error("KOT printing failed");
   }
 };
+
+// const handlePrint = async () => {
+//   try {
+//     if (!Capacitor.isNativePlatform()) {
+//       toast.error("Printing available only in app");
+//       return;
+//     }
+
+//     toast.dismiss();
+//     toast.loading("Checking printer...");
+
+//     const printer = await PosPrinter.checkPrinter();
+
+//     toast.dismiss();
+//     toast.loading("Printing...");
+
+//     const billText = generateBillText(order);
+
+//     await PosPrinter.printText({ text: billText });
+
+//     toast.dismiss();
+//     toast.success(`Printed on ${printer.name || "your printer"}`);
+//   } catch (err) {
+//     toast.dismiss();
+
+//     const msg = err?.message || "";
+
+//     if (msg.toLowerCase().includes("disabled")) {
+//       toast("Please turn on Bluetooth", { icon: "🔵" });
+//       await PosPrinter.openBluetoothSettings();
+//       return;
+//     }
+
+//     toast.error(msg || "No printer connected");
+//   }
+// };
+
+
 
 
 
@@ -502,22 +610,34 @@ const handlePrint = async () => {
 
 
       {/* Buttons */}
-      <div className="mt-4 flex justify-center gap-3">
-        <button
-          onClick={handlePrint}
-          className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700"
-        >
-          <Printer size={16} />
-          Print Bill
-        </button>
-        <ShareInvoiceButton
-          orderId={order._id}
-          text={order.isShared ? "Re-share" : "Share"}
-          currOrder={order}
-          onWhatsappMissing={() => setShowWhatsappInput(true)}
-          markShared={markShared}
-        />
-      </div>
+    <div className="mt-4 flex justify-center gap-2 flex-nowrap">
+
+      <button
+        onClick={handleKOTPrint}
+        className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+      >
+        <Printer size={14} />
+        Print KOT
+      </button>
+
+      <button
+        onClick={handlePrint}
+        className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+      >
+        <Printer size={14} />
+        Print Bill
+      </button>
+
+      <ShareInvoiceButton
+        orderId={order._id}
+        text={order.isShared ? "Re-share" : "Share"}
+        currOrder={order}
+        onWhatsappMissing={() => setShowWhatsappInput(true)}
+        markShared={markShared}
+      />
+
+    </div>
+
     </div>
   </div>
 );

@@ -118,7 +118,7 @@ const EditStoreInfoPage = () => {
           </div>
 
           {/* Email */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
@@ -134,7 +134,7 @@ const EditStoreInfoPage = () => {
             {errors.email && (
               <p className="text-xs text-red-500 mt-1">{errors.email}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Phone Number */}
           <div>
