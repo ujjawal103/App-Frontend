@@ -13,7 +13,8 @@ import {
   Edit,
   Receipt ,
   Wallet,
-  Package
+  Package,
+  Truck  
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import EditStorePhotoModal from "../components/EditStorePhotoModel.jsx";
@@ -301,6 +302,15 @@ export default function AccountDrawerStore({ isOpen, onClose }) {
                 <Wallet  className="text-green-500 w-5 h-5" />
                 QR Settlement's
               </Link>
+
+                <Link
+                  to="/delivery-settings"
+                  onClick={onClose}
+                  className="flex items-center gap-3 text-white hover:bg-gray-800 hover:text-white p-2 rounded-md transition-all"
+                >
+                  <Truck  className="text-indigo-500 w-5 h-5" />
+                  Delivery Settings
+                </Link>            
 
               <Link
                 to="/gst-charges"

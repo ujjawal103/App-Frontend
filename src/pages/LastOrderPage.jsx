@@ -1,9 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LastOrderPage = () => {
   const [order, setOrder] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const pending = JSON.parse(localStorage.getItem("pendingPayment"));
+  if (!pending?.razorpayOrderId) return;
+
+  const fetchOrder = async () => {
+    try {
+      console.log("Fetching order for Razorpay Order ID:", pending.razorpayOrderId);
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}orders/by-razorpay-order/${pending.razorpayOrderId}`,
+      );
+
+      console.log("Fetched order data:", data);
+      const enrichedOrder = {
+        ...data.order,
+        storeDetails: {
+          storeName: pending.storeName,
+          storeDetails: pending.storeDetails,
+        },
+      };
+
+      localStorage.setItem("lastOrder", JSON.stringify(enrichedOrder));
+      localStorage.removeItem("pendingPayment");
+
+    } catch {
+    }
+  };
+
+  fetchOrder();
+}, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("lastOrder");
@@ -59,11 +90,25 @@ const LastOrderPage = () => {
 
         <p className="text-xs break-words">
           <strong>Order ID:</strong> {order._id} <br />
-          <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"} <br />
+          {/* <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"} <br /> */}
+          {
+            (order.orderType === "dine-in" && order.tableId?.tableNumber) ? (
+              <>
+                <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"}
+              </>
+            ) : (
+              <>
+                <strong>Order Type:</strong> {order.orderType === "delivery" ? "QR Delivery" : "Takeaway"}
+              </>
+            )
+          }
+          
+          <br />
           <strong>Customer:</strong> {order.username || "Guest"} <br />
           <strong>Date:</strong>{" "}
           {new Date(order.createdAt).toLocaleString()}
         </p>
+        <strong className="text-xs">Payment Method:</strong> <span className="text-xs">{order.paymentMethod || "N/A"}</span>
 
         <div className="border-b border-dashed border-gray-300 my-2" />
 
@@ -121,6 +166,14 @@ const LastOrderPage = () => {
                 </td>
               </tr>
             )}
+            {order.orderType === "delivery" && (
+              <tr>
+                <td>Delivery Charge</td>
+                <td className="text-right right">
+                  ₹{order.deliveryDetails?.deliveryCharge?.toFixed(2) || "0.00"}
+                </td>
+              </tr>
+            )}
 
             <tr className="font-semibold">
               <td>Total</td>
@@ -130,6 +183,17 @@ const LastOrderPage = () => {
             </tr>
           </tbody>
         </table>
+
+        {order.orderType === "delivery" && order.deliveryDetails?.address && (
+          <>
+            <div className="line my-2 border-b border-dashed border-gray-300"></div>
+
+            <p className="text-xs text-center break-words">
+              <strong>Delivery Address</strong><br />
+              {order.deliveryDetails.address}
+            </p>
+          </>
+        )}
 
         <div className="border-b border-dashed border-gray-300 my-2" />
 

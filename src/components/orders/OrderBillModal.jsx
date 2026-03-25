@@ -32,42 +32,61 @@ const OrderBillModal = ({ orderId, setOrders, onClose }) => {
   const printRef = useRef(null);
 
 
-//   function generateBillText(order) {
+// function generateBillText(order) {
+//   const LINE_WIDTH = 32;
+
+//   const formatLine = (left, right) => {
+//     const rightStr = right.toString();
+//     const spaceCount = LINE_WIDTH - left.length - rightStr.length;
+//     const spaces = " ".repeat(spaceCount > 0 ? spaceCount : 1);
+//     return left + spaces + rightStr + "\n";
+//   };
+
 //   let text = "";
 
-//   text += `${order.storeId.storeName}\n`;
-//   text += "--------------------------\n";
-//   text += `${order.storeId.storeDetails.address}\n`;
-//   text += `Phone: ${order.storeId.storeDetails.phoneNumber}\n\n`;
+//   text += order.storeId.storeName + "\n";
+//   text += "--------------------------------\n";
+//   text += order.storeId.storeDetails.address + "\n";
+//   text += "Phone: " + order.storeId.storeDetails.phoneNumber + "\n";
+//   text += "--------------------------------\n";
 
-//   text += "--------------------------\n";
-//   text += `Order ID: ${order._id}\n`;
-//   text += `Table: ${order.tableId?.tableNumber || "N/A"}\n`;
-//   text += `Date: ${new Date(order.createdAt).toLocaleString()}\n`;
-//   text += "--------------------------\n";
+//   text += "Order ID: " + order._id + "\n";
+//   text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+//   text += "--------------------------------\n";
 
 //   order.items.forEach(item => {
-//     text += `${item.itemName}\n`;
+//     text += item.itemName + "\n";
+
 //     item.variants.forEach(v => {
-//       text += `  ${v.type} x ${v.quantity}    ₹${v.total.toFixed(2)}\n`;
+//       const price = "Rs " + v.total.toFixed(2);
+//       const name = `  ${v.type} x ${v.quantity}`;
+//       text += formatLine(name, price);
 //     });
 //   });
 
-//   text += "--------------------------\n";
-//   text += `Subtotal        ₹${order.subTotal.toFixed(2)}\n`;
+//   text += "--------------------------------\n";
+
+//   text += formatLine("Subtotal", "Rs " + order.subTotal.toFixed(2));
 
 //   if (order.gstApplicable) {
-//     text += `GST (${order.gstRate * 100}%)        ₹${order.gstAmount.toFixed(2)}\n`;
+//     text += formatLine(
+//       `GST (${order.gstRate * 100}%)`,
+//       "Rs " + order.gstAmount.toFixed(2)
+//     );
 //   }
 
 //   if (order.restaurantChargeApplicable) {
-//     text += `Service Charge  ₹${order.restaurantChargeAmount.toFixed(2)}\n`;
+//     text += formatLine(
+//       "Service Charge",
+//       "Rs " + order.restaurantChargeAmount.toFixed(2)
+//     );
 //   }
 
-//   text += "--------------------------\n";
-//   text += `TOTAL           ₹${order.totalAmount.toFixed(2)}\n`;
-//   text += "--------------------------\n";
-//   text += "Thank you for visiting 🙂\n\n\n";
+//   text += "--------------------------------\n";
+//   text += formatLine("TOTAL", "Rs " + order.totalAmount.toFixed(2));
+//   text += "--------------------------------\n";
+
+//   text += "Thank you for visiting\n\n";
 
 //   return text;
 // }
@@ -82,18 +101,36 @@ function generateBillText(order) {
     return left + spaces + rightStr + "\n";
   };
 
+  const centerText = (text, width = LINE_WIDTH) => {
+    if (!text) return "\n";
+    const spaces = Math.max(0, Math.floor((width - text.length) / 2));
+    return " ".repeat(spaces) + text + "\n";
+  };
+
   let text = "";
 
-  text += order.storeId.storeName + "\n";
+  // 🔥 HEADER (CENTERED)
+  text += centerText(order.storeId?.storeName.toUpperCase());
   text += "--------------------------------\n";
-  text += order.storeId.storeDetails.address + "\n";
-  text += "Phone: " + order.storeId.storeDetails.phoneNumber + "\n";
-  text += "--------------------------------\n";
-
-  text += "Order ID: " + order._id + "\n";
-  text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+  text += centerText(order.storeId?.storeDetails?.address);
+  text += centerText("Phone: " + order.storeId?.storeDetails?.phoneNumber);
   text += "--------------------------------\n";
 
+  // 🔥 ORDER INFO
+  text += "Id: " + order?._id + "\n";
+
+  if (order.orderType === "delivery") {
+    text += "Type: QR Delivery\n";
+  } else {
+    text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+  }
+  text += "Customer: " + (order.username || "Guest") + "\n";
+  text += "Date: " + new Date(order.createdAt).toLocaleString() + "\n";
+  text += "Payment: " + (order.paymentMethod || "N/A") + "\n";
+
+  text += "--------------------------------\n";
+
+  // 🔥 ITEMS
   order.items.forEach(item => {
     text += item.itemName + "\n";
 
@@ -106,6 +143,7 @@ function generateBillText(order) {
 
   text += "--------------------------------\n";
 
+  // 🔥 BILLING
   text += formatLine("Subtotal", "Rs " + order.subTotal.toFixed(2));
 
   if (order.gstApplicable) {
@@ -122,28 +160,93 @@ function generateBillText(order) {
     );
   }
 
+  // ✅ DELIVERY CHARGE
+  if (order.orderType === "delivery") {
+    text += formatLine(
+      "Delivery",
+      "Rs " + (order.deliveryDetails?.deliveryCharge || 0).toFixed(2)
+    );
+  }
+
   text += "--------------------------------\n";
+
+  // 🔥 TOTAL
   text += formatLine("TOTAL", "Rs " + order.totalAmount.toFixed(2));
   text += "--------------------------------\n";
 
-  text += "Thank you for visiting\n\n";
+  // ✅ DELIVERY ADDRESS
+  if (order.orderType === "delivery" && order.deliveryDetails?.address) {
+    text += centerText("DELIVERY ADDRESS");
+    text += centerText(order.deliveryDetails.address);
+    text += "--------------------------------\n";
+  }
+
+  // 🔥 FOOTER (CENTERED)
+  text += centerText("Thank you for visiting");
+  text += "\n\n";
 
   return text;
 }
 
+// function generateKOTText(order) {
+//   let text = "";
+
+//   text += "KITCHEN ORDER TICKET\n";
+//   text += "--------------------------------\n";
+
+//   text += order.storeId.storeName + "\n";
+//   text += "--------------------------------\n";
+
+//   text += "Order: " + order._id + "\n";
+//   text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+//   text += "--------------------------------\n";
+
+//   order.items.forEach(item => {
+//     text += item.itemName + "\n";
+
+//     item.variants.forEach(v => {
+//       text += `  ${v.type} x ${v.quantity}\n`;
+//     });
+//   });
+
+//   text += "--------------------------------\n";
+//   text += new Date(order.createdAt).toLocaleString() + "\n";
+
+//   text += "\n\n\n";
+
+//   return text;
+// }
+
 function generateKOTText(order) {
+  const LINE_WIDTH = 32;
+
+  const centerText = (text, width = LINE_WIDTH) => {
+    if (!text) return "\n";
+    const spaces = Math.max(0, Math.floor((width - text.length) / 2));
+    return " ".repeat(spaces) + text + "\n";
+  };
+
   let text = "";
 
-  text += "KITCHEN ORDER TICKET\n";
+  // 🔥 HEADER (CENTERED)
+  text += centerText("KITCHEN ORDER TICKET");
   text += "--------------------------------\n";
 
-  text += order.storeId.storeName + "\n";
+  text += centerText(order.storeId.storeName);
   text += "--------------------------------\n";
 
+  // 🔥 ORDER INFO
   text += "Order: " + order._id + "\n";
-  text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+
+  if (order.orderType === "delivery") {
+    text += "Type: QR Delivery\n";
+  } else {
+    text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+  }
+
   text += "--------------------------------\n";
 
+  // 🔥 ITEMS
   order.items.forEach(item => {
     text += item.itemName + "\n";
 
@@ -153,7 +256,9 @@ function generateKOTText(order) {
   });
 
   text += "--------------------------------\n";
-  text += new Date(order.createdAt).toLocaleString() + "\n";
+
+  // 🔥 FOOTER DATE (CENTERED)
+  text += centerText(new Date(order.createdAt).toLocaleString());
 
   text += "\n\n\n";
 
@@ -309,162 +414,6 @@ const handleKOTPrint = async () => {
 
 
 
-//oldest
-
-
-//   const handlePrint = () => {
-//   const printContents = printRef.current.innerHTML;
-//   const win = window.open("", "", "width=400,height=600");
-
-//   // ✅ Add full URL for image if relative path
-//   const absolutePhotoUrl = order.storeId.storeDetails.photo.startsWith("http")
-//     ? order.storeId.storeDetails.photo
-//     : `${window.location.origin}${order.storeId.storeDetails.photo}`;
-
-//   // Inject HTML & Styles
-//   win.document.write(`
-//   <html>
-//     <head>
-//       <style>
-//         * {
-//           box-sizing: border-box;
-//           word-wrap: break-word;
-//         }
-//         body {
-//           font-family: 'Courier New', monospace;
-//           padding: 10px;
-//           margin: 0;
-//         }
-//         .bill-container {
-//           width: 250px;
-//           margin: auto;
-//           text-align: center;
-//           overflow-wrap: break-word;
-//           word-break: break-word;
-//         }
-//         img {
-//           display: block;
-//           margin: 0 auto 8px auto;
-//           width: 80px;
-//           height: 80px;
-//           border-radius: 50%;
-//           object-fit: cover;
-//         }
-//         .line {
-//           border-bottom: 1px dashed #ccc;
-//           margin: 6px 0;
-//         }
-//         table {
-//           width: 100%;
-//           font-size: 12px;
-//           border-collapse: collapse;
-//           table-layout: fixed; /* ✅ ensures no column stretches */
-//         }
-//         td {
-//           padding: 3px 0;
-//           vertical-align: top;
-//           word-wrap: break-word;
-//           overflow-wrap: break-word;
-//         }
-//         .right {
-//           text-align: right !important;
-//         }
-//         strong {
-//           word-break: break-word;
-//         }
-//       </style>
-//     </head>
-//     <body>
-//       <div class="bill-container">
-//         ${printContents}
-//       </div>
-//     </body>
-//   </html>
-// `);
-
-
-//   win.document.close();
-
-//   // ✅ Wait for the image to load before printing
-//   win.onload = () => {
-//     win.focus();
-//     win.print();
-
-//     // ✅ Optional: Trigger automatic PDF download with proper filename
-//     win.document.title = `Order_${order._id}.pdf`;
-//   };
-// };
-
-
-// const handlePrint = () => {
-//   if (!Capacitor.isNativePlatform()) {
-//     alert("Printing is supported only in the app.");
-//     return;
-//   }
-
-//   if (!window.cordova?.plugins?.printer) {
-//     alert("Printer plugin not available");
-//     return;
-//   }
-
-//   const html = `
-//     <html>
-//       <head>
-//         <style>
-//           body {
-//             font-family: 'Courier New', monospace;
-//             padding: 10px;
-//             margin: 0;
-//           }
-//           .bill-container {
-//             width: 250px;
-//             margin: auto;
-//             text-align: center;
-//           }
-//           img {
-//             width: 80px;
-//             height: 80px;
-//             border-radius: 50%;
-//             object-fit: cover;
-//             margin-bottom: 8px;
-//           }
-//           table {
-//             width: 100%;
-//             font-size: 12px;
-//             border-collapse: collapse;
-//           }
-//           td {
-//             padding: 2px 0;
-//             word-break: break-word;
-//           }
-//           .right {
-//             text-align: right;
-//           }
-//         </style>
-//       </head>
-//       <body>
-//         ${printRef.current.innerHTML}
-//       </body>
-//     </html>
-//   `;
-
-//   window.cordova.plugins.printer.print(
-//     html,
-//     { name: `Order_${order._id}` },
-//     () => console.log("✅ Print success"),
-//     (err) => console.error("❌ Print failed", err)
-//   );
-// };
-
-
-
-
-
-
-
-
-
-
 
   if (loading) {
     return (
@@ -513,7 +462,17 @@ const handleKOTPrint = async () => {
         <div className="line my-2 border-b border-dashed border-gray-300"></div>
         <p className="text-xs break-words">
           <strong>Order ID:</strong> {order._id} <br />
-          <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"} <br />
+          {
+            (order.tableId || order.orderType === "dine-in") ? (
+              <>
+                <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"}
+              </>
+            ) : (
+              <>
+                <strong>Order Type:</strong> {order.orderType === "delivery" ? "QR Delivery" : "Takeaway"}
+              </>
+            )
+          } <br />
           <strong>Customer:</strong> {order.username || "Guest"} <br />
           <strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}
         </p>
@@ -567,6 +526,14 @@ const handleKOTPrint = async () => {
                 </td>
               </tr>
             )}
+            {order.orderType === "delivery" && (
+              <tr>
+                <td>Delivery Charge</td>
+                <td className="text-right right">
+                  ₹{order.deliveryDetails?.deliveryCharge?.toFixed(2) || "0.00"}
+                </td>
+              </tr>
+            )}
             <tr>
               <td className="font-semibold"><strong>Total</strong></td>
               <td className="text-right font-semibold right">
@@ -575,6 +542,17 @@ const handleKOTPrint = async () => {
             </tr>
           </tbody>
         </table>
+
+        {order.orderType === "delivery" && order.deliveryDetails?.address && (
+          <>
+            <div className="line my-2 border-b border-dashed border-gray-300"></div>
+
+            <p className="text-xs text-center break-words">
+              <strong>Delivery Address</strong><br />
+              {order.deliveryDetails.address}
+            </p>
+          </>
+        )}
 
         <div className="line my-2 border-b border-dashed border-gray-300"></div>
         <p className="text-[10px] text-center text-gray-500 break-words">
