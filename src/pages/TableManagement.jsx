@@ -8,7 +8,7 @@ import FooterNavStore from "../components/FooterNavStore";
 import Loading from "../components/Loading";
 import { Capacitor } from "@capacitor/core";
 import { saveStoreTables, getStoreTables } from "../offline/storeTablesDB";
-import { StatusBar, Style } from "@capacitor/status-bar";
+// import { StatusBar, Style } from "@capacitor/status-bar";
 
 const TableManagement = () => {
   const [tables, setTables] = useState([]);
@@ -23,18 +23,18 @@ const TableManagement = () => {
 
   
 //in future we can set different colors for different pages
-useEffect(() => {
-  // Set pink background color
-  StatusBar.setBackgroundColor({ color: "#e60076" });
+// useEffect(() => {
+//   // Set pink background color
+//   StatusBar.setBackgroundColor({ color: "#e60076" });
 
-  // Optional → dark icons (white icons use Style.Dark)
-  StatusBar.setStyle({ style: Style.Dark });               //now we can see the white icons
+//   // Optional → dark icons (white icons use Style.Dark)
+//   StatusBar.setStyle({ style: Style.Dark });               //now we can see the white icons
 
-  // return () => {
-  //     StatusBar.setBackgroundColor({ color: "#FFFFFF" }); // Reset when leaving page
-  //     StatusBar.setStyle({ style: Style.Light });
-  //   };
-}, []);
+//   // return () => {
+//   //     StatusBar.setBackgroundColor({ color: "#FFFFFF" }); // Reset when leaving page
+//   //     StatusBar.setStyle({ style: Style.Light });
+//   //   };
+// }, []);
 
   
 

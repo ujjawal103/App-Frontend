@@ -94,3 +94,7 @@ h4 {
   scrollbar-width: none;
 }
 
+/* #root {
+  padding-top: var(--safe-area-top);
+  background-color: #e60076;
+} */

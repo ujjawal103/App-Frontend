@@ -71,8 +71,12 @@ const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = n
           </span>
         </div>
 
-        <p className="text-gray-600 mt-1 text-xs truncate w-[80vw]">👤 {order.username || "Guest"} </p>
-        <p className="text-gray-600 text-xs flex items-center gap-1"><FaWhatsapp /> {order.whatsapp || "Not provided"}</p>
+        <p className="text-gray-600 mt-1 text-xs truncate w-full max-w-[200px] sm:max-w-full"> 👤 {order.username || "Guest"} </p>
+        <p className="text-gray-600 text-xs flex items-center gap-1 mt-0.5">
+            <FaWhatsapp className="text-green-500 shrink-0" /> 
+            <span className="truncate">{order.whatsapp || "Not provided"}
+            </span>
+        </p>
         <p className="text-gray-500 text-xs">
           {new Date(order.createdAt).toLocaleString()}
         </p>

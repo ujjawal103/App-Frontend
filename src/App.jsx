@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 import { initializePush } from "./push";
 import { scheduleDailyMorningNotification } from "./utils/scheduleNotification";
 import { syncPendingOrders } from "./utils/orderSync";
-import { StatusBar  } from "@capacitor/status-bar";
+import { StatusBar , Style  } from "@capacitor/status-bar";
 import TermsAndConditions from './pages/TermsAndConditions'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import RefundAndCancellationPolicy from './pages/RefundAndCancellationPolicy'
@@ -55,6 +55,8 @@ import AdminStoreWallet from './pages/admin/AdminStoreWallet'
 import DeliverySettings from './pages/DeliverySettings'
 import DeliveryMenu from './pages/DeliveryMenu'
 import SelectLocationPage from './pages/SelectLocationPage'
+// import { SafeArea } from "@capacitor-community/safe-area";
+import { EdgeToEdge } from "@capawesome/capacitor-android-edge-to-edge-support";
 
 
 
@@ -66,12 +68,93 @@ const App = () => {
    const {sendMessage, recieveMessage, socket} = useSocket();
    const {store , setStore} = useContext(StoreDataContext);
 
-   useEffect(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setBackgroundColor({ color: "#e60076" }); // default white
-    StatusBar.setStyle({ style: "DARK" }); // dark 
+  //  useEffect(() => {
+  //   StatusBar.setOverlaysWebView({ overlay: false });
+  //   StatusBar.setBackgroundColor({ color: "#e60076" }); // default white
+  //   StatusBar.setStyle({ style: "DARK" }); // dark 
 
+  // }, []);
+  
+
+
+// useEffect(() => {
+//     const applySafeArea = async () => {
+//       try {
+//         const insets = await SafeArea.getSafeAreaInsets();
+
+//         document.documentElement.style.setProperty(
+//           "--safe-area-top",
+//           `${insets.top}px`
+//         );
+//       } catch (err) {
+//         console.log("SafeArea error:", err);
+//       }
+//     };
+
+//     applySafeArea();
+//   }, []);
+
+//  useEffect(() => {
+//     const setupEdgeToEdge = async () => {
+//       try {
+//         await EdgeToEdge.setBackgroundColor({
+//           color: "#e60076",
+//         });
+//       } catch (err) {
+//         console.log("EdgeToEdge error:", err);
+//       }
+//     };
+
+//     setupEdgeToEdge();
+//   }, []);
+
+
+useEffect(() => {
+    const setup = async () => {
+      try {
+        const platform = Capacitor.getPlatform();
+
+        if (platform === "android") {
+
+          // 🔍 detect android version
+          const ua = navigator.userAgent;
+          const match = ua.match(/Android\s([0-9]+)/);
+          const androidVersion = match ? parseInt(match[1]) : 0;
+
+          if (androidVersion >= 15) {
+            // ✅ Android 15+ → use EdgeToEdge
+            await EdgeToEdge.setBackgroundColor({
+              color: "#e60076",
+            });
+          } else {
+            // ✅ Android ≤14 → use StatusBar
+            await StatusBar.setBackgroundColor({
+              color: "#e60076",
+            });
+            await StatusBar.setStyle({ style: Style.Light });
+          }
+        }
+      } catch (err) {
+        console.log("Setup error:", err);
+      }
+    };
+
+    setup();
   }, []);
+
+
+//   useEffect(() => {
+//   const setup = async () => {
+//     try {
+//       await StatusBar.setBackgroundColor({ color: "#e60076" });
+//       await StatusBar.setStyle({ style: Style.Dark });
+//     } catch (err) {
+//       console.log("StatusBar error:", err);
+//     }
+//   };
+
+//   setup();
+// }, []);
 
   
   useEffect(() => {
