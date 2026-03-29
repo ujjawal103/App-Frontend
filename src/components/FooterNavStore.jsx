@@ -23,6 +23,7 @@ import {
   FaBoxOpen,
   FaTruck     
 } from "react-icons/fa";
+import { HiOutlineQrcode } from "react-icons/hi";
 import axios from "axios";
 import Loading from "./Loading";
 import toast from "react-hot-toast";
@@ -388,6 +389,24 @@ export default function FooterNavStore() {
                         <span className="text-sm">Inventries / Stock</span>
                       </Link>
                     </div>
+
+                  {/* Monthly QR Analytics */}
+                  <div
+                    className={`hidden md:w-60 md:flex cursor-pointer ${
+                      isActive("/monthly-qr-delivery-analytics")
+                        ? "md:bg-gray-800" : "md:hover:bg-gray-800"
+                    }`}
+                  >
+                    <Link
+                      to="/monthly-qr-delivery-analytics"
+                      className={`flex items-center gap-2 text-black md:text-white ${
+                        isActive("/monthly-qr-delivery-analytics") ? "border-t" : ""
+                      } w-full p-4`}
+                    >
+                      <HiOutlineQrcode  size={22} />
+                      <span className="text-sm">QR Delivery Orders</span>
+                    </Link>
+                  </div>                  
 
                     {/* Delivery Settings */}
                     <div

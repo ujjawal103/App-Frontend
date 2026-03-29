@@ -58,6 +58,9 @@ import SelectLocationPage from './pages/SelectLocationPage'
 // import { SafeArea } from "@capacitor-community/safe-area";
 import { EdgeToEdge } from "@capawesome/capacitor-android-edge-to-edge-support";
 
+import Notifications from "./notification/Notification";
+import MonthlyDeliveryAnalytics from '../../frontend/src/pages/MonthlyDeliveryAnalytics'
+
 
 
 
@@ -326,6 +329,12 @@ const navigate = useNavigate();
             </StoreProtectedWrapper>
           } />
 
+          <Route path='/monthly-qr-delivery-analytics' element={
+            <StoreProtectedWrapper>
+              <MonthlyDeliveryAnalytics />
+            </StoreProtectedWrapper>
+          } />          
+
           <Route path='/table-analytics' element={
             <StoreProtectedWrapper>
               <TablesOrders />
@@ -457,6 +466,7 @@ const navigate = useNavigate();
       </Routes>
       </AppLayout>
       <Toaster position="top-right" reverseOrder={false} />
+      <Notifications position="top-right" />
     </div>
   )
 }

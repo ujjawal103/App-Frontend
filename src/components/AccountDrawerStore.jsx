@@ -14,7 +14,8 @@ import {
   Receipt ,
   Wallet,
   Package,
-  Truck  
+  Truck,
+  QrCode  
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import EditStorePhotoModal from "../components/EditStorePhotoModel.jsx";
@@ -290,6 +291,15 @@ export default function AccountDrawerStore({ isOpen, onClose }) {
               >
                 <Package   className="text-cyan-200 w-5 h-5" />
                 Inventries / Stock
+              </Link>
+
+              <Link
+                to="/monthly-qr-delivery-analytics"
+                onClick={onClose}
+                className="flex items-center gap-3 text-white hover:bg-gray-800 hover:text-white p-2 rounded-md transition-all"
+              >
+                <QrCode className="text-amber-500 w-5 h-5" />
+                QR Delivery Orders
               </Link>
 
 
