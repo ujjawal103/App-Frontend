@@ -1,6 +1,6 @@
 import React, { useState , useRef , useEffect } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 
 const CollectWhatsappInline = ({ orderId, onSaved }) => {
   const [whatsappValue, setWhatsappValue] = useState("");

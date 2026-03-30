@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { Upload, Image as ImageIcon, X } from "lucide-react";
 import { StoreDataContext } from "../context/StoreContext";
 

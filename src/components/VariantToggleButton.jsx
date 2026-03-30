@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ToggleLeft, ToggleRight } from "lucide-react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 
 const VariantToggleButton = ({ item, variant, onUpdated }) => {
   const [loading, setLoading] = useState(false);

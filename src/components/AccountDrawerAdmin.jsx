@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { User, Mail, Shield, LogOut, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 
 export default function AccountDrawerAdmin({ isOpen, onClose }) {
   const drawerRef = useRef();

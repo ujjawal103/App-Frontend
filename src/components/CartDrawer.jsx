@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 

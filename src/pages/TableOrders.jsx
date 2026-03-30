@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import TableOrderAnalytics from "../components/TableOrderAnalytics";
 import FooterNavStore from "../components/FooterNavStore";
 

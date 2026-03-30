@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import axios from "axios";
 import Loading from "../components/Loading";
 import MenuItemCard from "../components/MenuItemCard";

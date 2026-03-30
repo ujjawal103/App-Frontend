@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { useContext } from "react";
 import { StoreDataContext } from "../context/StoreContext";
 import { useEffect } from "react";

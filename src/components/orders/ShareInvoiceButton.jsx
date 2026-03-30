@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 
 const ShareInvoiceButton = ({ orderId, text, onWhatsappMissing, currOrder , markShared }) => {
   const [loading, setLoading] = useState(false);

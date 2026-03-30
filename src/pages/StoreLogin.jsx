@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link , useNavigate} from 'react-router-dom'
 import { StoreDataContext } from '../context/StoreContext';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from "../notification/Notification";
 import Loading from '../components/Loading';
 import { initializePush } from "../push";
 

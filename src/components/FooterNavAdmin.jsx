@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import Loading from "./Loading";
-import toast from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import AccountDrawerAdmin from "./AccountDrawerAdmin";
 
 export default function FooterNavAdmin() {

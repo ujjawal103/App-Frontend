@@ -156,7 +156,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
-import toast from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { Bluetooth, Printer, Settings, Check } from "lucide-react";
 import { PosPrinter } from "../plugins/posPrinter";
 import FooterNavStore from "../components/FooterNavStore";

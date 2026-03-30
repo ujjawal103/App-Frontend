@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { StoreDataContext } from "../context/StoreContext"; // ✅ your context

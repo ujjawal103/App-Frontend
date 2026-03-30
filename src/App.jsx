@@ -59,7 +59,7 @@ import SelectLocationPage from './pages/SelectLocationPage'
 import { EdgeToEdge } from "@capawesome/capacitor-android-edge-to-edge-support";
 
 import Notifications from "./notification/Notification";
-import MonthlyDeliveryAnalytics from '../../frontend/src/pages/MonthlyDeliveryAnalytics'
+import MonthlyDeliveryAnalytics from './pages/MonthlyDeliveryAnalytics'
 
 
 

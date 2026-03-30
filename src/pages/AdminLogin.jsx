@@ -2,7 +2,7 @@ import React, { useState , useContext} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AdminDataContext } from '../context/AdminContext';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from "../notification/Notification";
 import Loading from '../components/Loading';
 
 const AdminLogin = () => {

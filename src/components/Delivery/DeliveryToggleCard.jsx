@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { motion } from "framer-motion";
 
 const DeliveryToggleCard = ({ initialStatus, deliveryQr, setDeliveryQr }) => {

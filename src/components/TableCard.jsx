@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { FaTrash, FaEdit, FaDownload, FaPrint } from "react-icons/fa";
 import html2canvas from "html2canvas";
 import Loading from "./Loading";

@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 
 import { QrCode } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { StoreDataContext } from "../../context/StoreContext";
 
 const QrToggleCard = () => {

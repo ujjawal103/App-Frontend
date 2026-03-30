@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from "react";
 import { X, MapPin, Phone, User, Home, Navigation } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { motion, AnimatePresence } from "framer-motion";
 
 const AddressDrawer = ({ open, onClose, locationData, navigateBack }) => {

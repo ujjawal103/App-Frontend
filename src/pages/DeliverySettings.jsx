@@ -1,6 +1,6 @@
 import React, { useEffect, useState , useContext} from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import FooterNavStore from "../components/FooterNavStore";
 
 import DeliveryQRCard from "../components/Delivery/DeliveryQrCard";

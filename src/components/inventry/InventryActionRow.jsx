@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { ArrowLeftRight, Loader2 } from "lucide-react";
 
 const InventoryActionsRow = ({ itemId, variant, onRefresh }) => {

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { QrCode, Trash2, RefreshCcw, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import html2canvas from "html2canvas";

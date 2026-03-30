@@ -26,7 +26,7 @@ import {
 import { HiOutlineQrcode } from "react-icons/hi";
 import axios from "axios";
 import Loading from "./Loading";
-import toast from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import AccountDrawerStore from "./AccountDrawerStore";
 import { Capacitor } from "@capacitor/core";
 import { getStoreProfile, saveStoreProfile , deleteStoreProfile } from "../offline/storeProfileDB";

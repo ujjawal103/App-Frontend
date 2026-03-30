@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Trash2 } from "lucide-react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 
 const VariantDeleteButton = ({ item, variant, onUpdated }) => {
   const token = localStorage.getItem("token");

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CollectWhatsappInline from "./CollectWhatsappInline";
 import { Capacitor } from "@capacitor/core";
 import { PosPrinter } from "../../plugins/posPrinter";
-import toast from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 
 
 const isAndroid = Capacitor.getPlatform() === "android";

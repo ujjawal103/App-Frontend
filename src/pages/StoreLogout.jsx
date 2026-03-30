@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { removeFcmToken } from "../utils/removeFcm";
 import Lottie from "lottie-react";
 import LogoutAnim from "../assets/logout.json";

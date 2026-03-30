@@ -70,7 +70,7 @@ import {
   getPendingOrders,
   removePendingOrder,
 } from "../offline/pendingOrdersDB";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 
 let isSyncing = false;
 

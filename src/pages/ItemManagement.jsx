@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { Search } from "lucide-react";
 import ItemList from "../components/ItemList";
 import AddItemButton from "../components/AddItemButton";

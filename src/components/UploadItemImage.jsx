@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { Upload, Image as ImageIcon, X } from "lucide-react";
 
 const UploadItemImage = ({ item, onClose, onUpdated }) => {

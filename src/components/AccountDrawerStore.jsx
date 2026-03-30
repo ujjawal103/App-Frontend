@@ -20,7 +20,7 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import EditStorePhotoModal from "../components/EditStorePhotoModel.jsx";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 import { useContext } from "react";
 import { StoreDataContext } from "../context/StoreContext.jsx";
 

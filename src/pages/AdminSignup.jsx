@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { Link , useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import toast from 'react-hot-toast'
+import { toast } from "../notification/Notification";
 import Loading from '../components/Loading'
 import { AdminDataContext } from '../context/AdminContext'
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "../../notification/Notification";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {

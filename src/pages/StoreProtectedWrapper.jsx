@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SquareLoader from '../components/SquareLoader';
-import toast from 'react-hot-toast';
+import { toast } from "../notification/Notification";
 import { StoreDataContext } from '../context/StoreContext';
 import { Capacitor } from "@capacitor/core";
 import { getStoreProfile, saveStoreProfile , deleteStoreProfile } from "../offline/storeProfileDB";

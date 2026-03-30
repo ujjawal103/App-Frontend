@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Plus } from "lucide-react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import { toast } from "../notification/Notification";
 
 const AddItemButton = ({ onAdd, fetchCategories }) => {
   const [showModal, setShowModal] = useState(false);
