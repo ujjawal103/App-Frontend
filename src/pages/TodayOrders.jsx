@@ -29,7 +29,11 @@ const TodayOrders = () => {
   const fetchTodayOrders = async () => {
     try {
       setLoading(true);
-      const today = new Date().toISOString().split("T")[0];
+      const now = new Date();
+
+      const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+      }).format(now);
       const { data } = await axios.get(
         `${BASE_URL}orders/store-orders/date?date=${today}`,
         { headers: { Authorization: `Bearer ${storeToken}` } }

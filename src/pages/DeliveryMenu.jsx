@@ -506,39 +506,58 @@ useEffect(() => {
         />
 
         {/* Bottom Action Bar */}
-        {(cart.length > 0 || lastOrder) && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gray-200 border-t p-3 z-10">
-            <div
-              className={`flex gap-3 ${
-                cart.length > 0 && lastOrder ? "flex-row" : "flex-col"
-              }`}
-            >
-              {/* Last Order Button */}
-              {lastOrder && (
-                <button
-                  onClick={() => navigate("/last-order")}
-                  className={`bg-gray-800 text-white py-3 rounded font-medium ${
-                    cart.length > 0 ? "w-1/2" : "w-full"
-                  }`}
-                >
-                  My Last Order
-                </button>
-              )}
+             <div className="fixed bottom-0 left-0 right-0 bg-gray-200 border-t p-3 z-10">
+  <div className="flex gap-3">
 
-              {/* View Cart Button */}
-              {cart.length > 0 && (
-                <button
-                  onClick={() => setCartOpen(true)}
-                  className={`bg-pink-600 text-white py-3 rounded font-medium ${
-                    lastOrder ? "w-1/2" : "w-full"
-                  }`}
-                >
-                  View Cart ({new Set(cart.map(i => i.itemId)).size})
-                </button>
-              )}
-            </div>
-          </div>
+    {/* ✅ CASE: Cart exists → NO Track Order */}
+    {cart.length > 0 ? (
+      <>
+        {lastOrder && (
+          <button
+            onClick={() => navigate("/last-order")}
+            className="w-1/2 bg-gray-800 text-white py-3 rounded font-medium"
+          >
+            My Last Order
+          </button>
         )}
+
+        <button
+          onClick={() => setCartOpen(true)}
+          className={`bg-pink-600 text-white py-3 rounded font-medium ${
+            lastOrder ? "w-1/2" : "w-full"
+          }`}
+        >
+          View Cart ({new Set(cart.map(i => i.itemId)).size})
+        </button>
+      </>
+    ) : (
+      <>
+        {/* ✅ CASE: No Cart */}
+
+        {/* Track Order */}
+        <button
+          onClick={() => navigate("/track-my-order")}
+          className={`bg-green-600 text-white py-3 rounded font-medium ${
+            lastOrder ? "w-1/2" : "w-full"
+          }`}
+        >
+          Track Order
+        </button>
+
+        {/* Last Order */}
+        {lastOrder && (
+          <button
+            onClick={() => navigate("/last-order")}
+            className="w-1/2 bg-gray-800 text-white py-3 rounded font-medium"
+          >
+            My Last Order
+          </button>
+        )}
+      </>
+    )}
+
+  </div>
+</div>
 
 
     </div>

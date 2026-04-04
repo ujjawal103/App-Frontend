@@ -114,3 +114,12 @@ h4 {
 .animate-slideDown {
   animation: slideDown 0.5s ease;
 }
+
+.rdrInRange {
+  background: #f472b6 !important;
+}
+
+.rdrStartEdge,
+.rdrEndEdge {
+  background: #ec4899 !important;
+}

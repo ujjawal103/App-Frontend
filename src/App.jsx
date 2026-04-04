@@ -60,6 +60,7 @@ import { EdgeToEdge } from "@capawesome/capacitor-android-edge-to-edge-support";
 
 import Notifications from "./notification/Notification";
 import MonthlyDeliveryAnalytics from './pages/MonthlyDeliveryAnalytics'
+import TrackDeliveryOrder from './pages/TrackDeliveryOrder'
 
 
 
@@ -291,6 +292,8 @@ const navigate = useNavigate();
 
 
           <Route path="/last-order" element={<LastOrderPage />} />
+
+          <Route path="/track-my-order" element={<TrackDeliveryOrder />} />
 
           <Route path='/store-menu' element={
             <StoreProtectedWrapper>
