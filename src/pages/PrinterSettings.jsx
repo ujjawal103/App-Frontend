@@ -209,9 +209,10 @@ const PrinterSettings = () => {
       toast.error("Select a printer first");
       return;
     }
+    let toastId;
 
     try {
-      toast.loading("Printing test...");
+      toastId = toast.loading("Printing test...");
       await PosPrinter.printText({
         address: selectedPrinter.address,
         text: `
@@ -223,10 +224,10 @@ Printer Test
 
 `
       });
-      toast.dismiss();
+      toast.dismiss(toastId);
       toast.success("Printer working perfectly");
     } catch (err) {
-      toast.dismiss();
+      toast.dismiss(toastId);
       toast.error("Printer test failed");
     }
   };

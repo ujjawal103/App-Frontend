@@ -296,6 +296,7 @@ function generateKOTText(order) {
 
 
 const handlePrint = async () => {
+  let toastId;
   try {
     if (!Capacitor.isNativePlatform()) {
       toast.error("Printing available only in app");
@@ -310,8 +311,10 @@ const handlePrint = async () => {
     }
 
     const printer = JSON.parse(savedPrinter);
+    
 
-    toast.loading("Printing bill...");
+
+    toastId = toast.loading("Printing bill...");
 
     const billText = generateBillText(order);
 
@@ -320,15 +323,15 @@ const handlePrint = async () => {
       text: billText,
     });
 
-    toast.dismiss();
+    toast.dismiss(toastId);
     toast.success(`Printed on ${printer.name}`);
   } catch (err) {
-    toast.dismiss();
+    toast.dismiss(toastId);
 
     const msg = err?.message || "";
 
     if (msg.toLowerCase().includes("disabled")) {
-      toast("Please turn on Bluetooth", { icon: "🔵" });
+      toast.error("Please turn on Bluetooth", { icon: "🔵" });
       await PosPrinter.openBluetoothSettings();
       return;
     }
@@ -338,6 +341,7 @@ const handlePrint = async () => {
 };  
 
 const handleKOTPrint = async () => {
+    let toastId;
   try {
     if (!Capacitor.isNativePlatform()) {
       toast.error("Printing available only in app");
@@ -353,7 +357,7 @@ const handleKOTPrint = async () => {
 
     const printer = JSON.parse(savedPrinter);
 
-    toast.loading("Printing KOT...");
+    toastId = toast.loading("Printing KOT...");
 
     const kotText = generateKOTText(order);
 
@@ -362,11 +366,11 @@ const handleKOTPrint = async () => {
       text: kotText,
     });
 
-    toast.dismiss();
+    toast.dismiss(toastId);
     toast.success("KOT Printed");
 
   } catch (err) {
-    toast.dismiss();
+    toast.dismiss(toastId);
     toast.error("KOT printing failed");
   }
 };
