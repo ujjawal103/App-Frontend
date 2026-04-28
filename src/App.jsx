@@ -7,7 +7,8 @@ import StoreLogin from './pages/StoreLogin'
 import StoreSignup from './pages/StoreSignup'
 import StoreProtectedWrapper from './pages/StoreProtectedWrapper'
 import NotFound from './pages/NotFound'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
+import { toast } from "./notification/Notification";
 import StoreLogout from './pages/StoreLogout'
 import AppLayout from "./components/AppLayout";
 import AdminProtectedWrapper from './pages/AdminProtectedWrapper'
@@ -185,7 +186,6 @@ useEffect(() => {
   if (!socket) return;
 
   const handleNewOrder = (data) => {
-    console.log("🎉 New order received via socket:", data);
     toast.success("🛎️ New order received!");
 
     // ✅ Try to play sound
@@ -222,7 +222,7 @@ const navigate = useNavigate();
   return (
     <div>
       <AppLayout>
-      <Routes>...
+      <Routes>
         <Route path='/' element={<Start />} />
         {/* <Route path='/login' element={<UserLogin />} />
         <Route path='/signup' element={<UserSignup />} />           */}

@@ -159,7 +159,7 @@ const handleCheckout = async () => {
     if (isOffline) {
       try {
         await savePendingOrder(orderPayload);
-        toast("Order saved offline. Will sync when online.", { icon: "📡" });
+        toast.success("Order saved offline. Will sync when online.", { icon: "📡" });
 
         navigate("/order-success");
         setCart([]);
