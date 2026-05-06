@@ -7,11 +7,11 @@ import StoreCartDrawer from "../components/StoreCartDrawer";
 import { StoreDataContext } from "../context/StoreContext";
 import FooterNavStore from "../components/FooterNavStore";
 import { Capacitor } from "@capacitor/core";
-import { getStoreItems } from "../offline/storeItemsDB";
-import { getStoreTables } from "../offline/storeTablesDB";
+import { getStoreItems , saveStoreItems } from "../offline/storeItemsDB";
+import { getStoreTables , saveStoreTables } from "../offline/storeTablesDB";
 import CategoryFilterQRBar from "../components/CategoryFilterQRBar";
 import MenuItemCardSkeleton from "../components/MenuItemCardSkeleton";
-
+import { getStoreCategories , saveStoreCategories } from "../offline/storeCategoriesDB";
 
 
 const StoreMenu = ({ restaurantName = "Your Menu" }) => {
@@ -36,16 +36,39 @@ const StoreMenu = ({ restaurantName = "Your Menu" }) => {
   }, [storeId]);
 
 
-    const fetchCategories = async () => {
+const fetchCategories = async () => {
   try {
+
+    // ⭐ ONLINE FETCH
     const res = await axios.get(
       `${import.meta.env.VITE_BASE_URL}categories/${storeId}`
     );
-    setCategories(res.data.categories || []);
+
+    const categoriesList =
+      res.data.categories || [];
+
+    setCategories(categoriesList);
+
+    // ⭐ SAVE OFFLINE
+    await saveStoreCategories(categoriesList);
+
   } catch (err) {
+
+    // ⭐ OFFLINE FALLBACK
+    if (Capacitor.isNativePlatform()) {
+
+      const cached =
+        await getStoreCategories();
+
+      if (cached) {
+        setCategories(cached);
+        return;
+      }
+    }
+
     toast.error("Failed to load categories");
   }
-};  
+};
 
   const fetchMenu = async () => {
   try {
@@ -65,6 +88,7 @@ const StoreMenu = ({ restaurantName = "Your Menu" }) => {
     );
 
     setFilteredItems(available);
+    await saveStoreItems(items);
 
   } catch (err) {
 
@@ -104,6 +128,9 @@ const fetchTables = async () => {
     });
 
     setTables(data.tables);
+
+    // ⭐ Save offline
+    await saveStoreTables(data.tables);
 
   } catch (error) {
 

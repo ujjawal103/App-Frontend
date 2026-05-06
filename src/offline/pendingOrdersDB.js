@@ -119,7 +119,7 @@ export async function getPendingOrders() {
     const req = store.getAll();
     req.onsuccess = () => {
       const list = req.result || [];
-      list.sort((a, b) => a.id - b.id);
+      list.sort((a, b) => b.id - a.id);
       resolve(list);
     };
   });

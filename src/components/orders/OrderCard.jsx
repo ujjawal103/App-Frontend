@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import OrderBillModal from "./OrderBillModal.jsx";
 import ShareInvoiceButton from "./ShareInvoiceButton.jsx";
 import CollectWhatsappInline from "./CollectWhatsappInline";
 import { FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { getStoreTables } from "../../offline/storeTablesDB.js";
 
 
 
@@ -12,6 +13,7 @@ const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = n
   const [loadingAction, setLoadingAction] = useState("");
   const [showBill, setShowBill] = useState(false); // 👈 controls modal
   const [showWhatsappInput, setShowWhatsappInput] = useState(false);
+  const [offlineTableNumber, setOfflineTableNumber] = useState(null);
 
 
   // --- Action Handlers ---
@@ -44,6 +46,30 @@ const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = n
 );
   }
 
+
+  useEffect(() => {
+
+  if (!order.offline || !order.tableId) return;
+
+  const loadTableNumber = async () => {
+
+    const tables = await getStoreTables();
+
+    const matchedTable = tables?.find(
+      (t) => t._id === order.tableId
+    );
+
+    if (matchedTable) {
+      setOfflineTableNumber(matchedTable.tableNumber);
+    }
+  };
+
+  loadTableNumber();
+
+}, [order]);
+
+
+
   return (
     <>
       <div
@@ -53,7 +79,7 @@ const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = n
         <div className="flex justify-between items-center">
            <h3 className="font-medium text-sm">
             {
-              (order.tableId || order.orderType === "dine-in") ? `Table #${order?.tableId?.tableNumber || tableNumber || "N/A"}` : (order.orderType === "delivery" ? "QR Delivery Order" : "Takeaway Order")
+              (order.tableId || order.orderType === "dine-in") ? `Table #${order?.tableId?.tableNumber || offlineTableNumber || tableNumber || "N/A"}` : (order.orderType === "delivery" ? "QR Delivery Order" : "Takeaway Order")
             }
           </h3>
           <span
@@ -182,8 +208,16 @@ const OrderCard = ({ order, setOrders, onUpdateStatus, onCancel, tableNumber = n
 
       {/* Bill Modal */}
       {showBill && (
+        // <OrderBillModal
+        //   orderId={order._id}
+        //   setOrders={setOrders}
+        //   onClose={() => setShowBill(false)}
+        // />
         <OrderBillModal
           orderId={order._id}
+          initialOrder={order}
+          isOffline={order.offline}
+          tableNumber={offlineTableNumber}
           setOrders={setOrders}
           onClose={() => setShowBill(false)}
         />

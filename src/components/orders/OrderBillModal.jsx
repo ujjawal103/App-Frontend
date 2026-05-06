@@ -7,6 +7,7 @@ import CollectWhatsappInline from "./CollectWhatsappInline";
 import { Capacitor } from "@capacitor/core";
 import { PosPrinter } from "../../plugins/posPrinter";
 import { toast } from "../../notification/Notification";
+import { getStoreProfile } from "../../offline/storeProfileDB";
 
 
 const isAndroid = Capacitor.getPlatform() === "android";
@@ -25,8 +26,10 @@ async function ensureBluetoothPermission() {
 
 
 
-const OrderBillModal = ({ orderId, setOrders, onClose }) => {
-  const [order, setOrder] = useState(null);
+const OrderBillModal = ({  orderId, initialOrder, isOffline, tableNumber, setOrders, onClose }) => {
+  const [order, setOrder] = useState(
+  isOffline ? initialOrder : null
+);
   const [loading, setLoading] = useState(true);
   const [showWhatsappInput, setShowWhatsappInput] = useState(false);
   const printRef = useRef(null);
@@ -110,7 +113,7 @@ function generateBillText(order) {
   let text = "";
 
   // 🔥 HEADER (CENTERED)
-  text += centerText(order.storeId?.storeName.toUpperCase());
+  text += centerText(text += centerText(order.storeId?.storeName?.toUpperCase?.() || "STORE" ));
   text += "--------------------------------\n";
   text += centerText(order.storeId?.storeDetails?.address);
   text += centerText("Phone: " + order.storeId?.storeDetails?.phoneNumber);
@@ -122,7 +125,7 @@ function generateBillText(order) {
   if (order.orderType === "delivery") {
     text += "Type: QR Delivery\n";
   } else {
-    text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+    text += "Table: " + (order.tableId?.tableNumber || tableNumber || "N/A") + "\n";
   }
   text += "Customer: " + (order.username || "Guest") + "\n";
   text += "Date: " + new Date(order.createdAt).toLocaleString() + "\n";
@@ -241,7 +244,7 @@ function generateKOTText(order) {
   if (order.orderType === "delivery") {
     text += "Type: QR Delivery\n";
   } else {
-    text += "Table: " + (order.tableId?.tableNumber || "N/A") + "\n";
+    text += "Table: " + (order.tableId?.tableNumber || tableNumber || "N/A") + "\n";
   }
 
   text += "--------------------------------\n";
@@ -267,6 +270,42 @@ function generateKOTText(order) {
 
 
   useEffect(() => {
+    
+    // OFFLINE ORDER
+    if (isOffline && initialOrder) {
+
+  const loadOfflineStoreData = async () => {
+
+    const storeProfile = await getStoreProfile();
+
+    setOrder({
+      ...initialOrder,
+
+      storeId: {
+        storeName:
+          storeProfile?.storeName,
+
+        storeDetails: {
+          address:
+            storeProfile?.storeDetails?.address,
+
+          phoneNumber:
+            storeProfile?.storeDetails?.phoneNumber,
+
+          photo:
+            storeProfile?.storeDetails?.photo,
+        },
+      },
+    });
+
+    setLoading(false);
+  };
+
+  loadOfflineStoreData();
+
+  return;
+}
+
     const fetchOrder = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_BASE_URL}orders/${orderId}`, {
@@ -282,7 +321,7 @@ function generateKOTText(order) {
       }
     };
     fetchOrder();
-  }, [orderId]);
+  }, [orderId , isOffline, initialOrder]);
 
 
   const markShared=(orderId) =>{
@@ -447,7 +486,7 @@ const handleKOTPrint = async () => {
         {/* Store Info */}
         <div className="w-full flex items-center justify-center">
           <img
-            src={order.storeId.storeDetails.photo || "/store.png"}
+            src={order?.storeId?.storeDetails?.photo || "/store.png"}
             alt="Store Logo"
             className="rounded-full w-40 h-40  text-center object-cover"
           />
@@ -455,11 +494,11 @@ const handleKOTPrint = async () => {
 
         <div className="text-center">
           <h2 className="font-semibold text-lg break-words">
-            {order.storeId.storeName}
+            {order?.storeId?.storeName}
           </h2>
-          <p className="text-xs break-words">{order.storeId.storeDetails.address}</p>
+          <p className="text-xs break-words">{order?.storeId?.storeDetails?.address}</p>
           <p className="text-xs break-words">
-            📞 {order.storeId.storeDetails.phoneNumber}
+            📞 {order?.storeId?.storeDetails?.phoneNumber}
           </p>
         </div>
 
@@ -467,20 +506,20 @@ const handleKOTPrint = async () => {
         <p className="text-xs break-words">
           <strong>Order ID:</strong> {order._id} <br />
           {
-            (order.tableId || order.orderType === "dine-in") ? (
+            (order?.tableId || order?.orderType === "dine-in") ? (
               <>
-                <strong>Table:</strong> {order.tableId?.tableNumber || "N/A"}
+                <strong>Table:</strong> {order?.tableId?.tableNumber || tableNumber || "N/A"}
               </>
             ) : (
               <>
-                <strong>Order Type:</strong> {order.orderType === "delivery" ? "QR Delivery" : "Takeaway"}
+                <strong>Order Type:</strong> {order?.orderType === "delivery" ? "QR Delivery" : "Takeaway"}
               </>
             )
           } <br />
-          <strong>Customer:</strong> {order.username || "Guest"} <br />
-          <strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}
+          <strong>Customer:</strong> {order?.username || "Guest"} <br />
+          <strong>Date:</strong> {new Date(order?.createdAt).toLocaleString()}
         </p>
-        <strong className="text-xs">Payment Method:</strong> <span className="text-xs">{order.paymentMethod || "N/A"}</span>
+        <strong className="text-xs">Payment Method:</strong> <span className="text-xs">{order?.paymentMethod || "N/A"}</span>
         <div className="line my-2 border-b border-dashed border-gray-300"></div>
 
         {/* Items List */}
@@ -490,10 +529,10 @@ const handleKOTPrint = async () => {
               <React.Fragment key={item._id}>
                 <tr>
                   <td colSpan="2" className="font-semibold break-words">
-                    {item.itemName}
+                    {item?.itemName}
                   </td>
                 </tr>
-                {item.variants.map((v) => (
+                {item?.variants?.map((v) => (
                   <tr key={v._id}>
                     <td className="break-words">
                       {v.type} × {v.quantity}
@@ -514,19 +553,19 @@ const handleKOTPrint = async () => {
           <tbody>
             <tr>
               <td>Subtotal</td>
-              <td className="text-right right">₹{order.subTotal.toFixed(2)}</td>
+              <td className="text-right right">₹{order?.subTotal?.toFixed(2)}</td>
             </tr>
-            {order.gstApplicable && (
+            {order?.gstApplicable && (
               <tr>
-                <td>GST ({(order.gstRate * 100).toFixed(0)}%)</td>
-                <td className="text-right right">₹{order.gstAmount.toFixed(2)}</td>
+                <td>GST ({(order?.gstRate * 100).toFixed(0)}%)</td>
+                <td className="text-right right">₹{order?.gstAmount?.toFixed(2)}</td>
               </tr>
             )}
             {order.restaurantChargeApplicable && (
               <tr>
                 <td>Restaurant Charge</td>
                 <td className="text-right right">
-                  ₹{order.restaurantChargeAmount.toFixed(2)}
+                  ₹{order?.restaurantChargeAmount?.toFixed(2)}
                 </td>
               </tr>
             )}
@@ -534,26 +573,26 @@ const handleKOTPrint = async () => {
               <tr>
                 <td>Delivery Charge</td>
                 <td className="text-right right">
-                  ₹{order.deliveryDetails?.deliveryCharge?.toFixed(2) || "0.00"}
+                  ₹{order?.deliveryDetails?.deliveryCharge?.toFixed(2) || "0.00"}
                 </td>
               </tr>
             )}
             <tr>
               <td className="font-semibold"><strong>Total</strong></td>
               <td className="text-right font-semibold right">
-                <strong>₹{order.totalAmount.toFixed(2)}</strong>
+                <strong>₹{order?.totalAmount?.toFixed(2)}</strong>
               </td>
             </tr>
           </tbody>
         </table>
 
-        {order.orderType === "delivery" && order.deliveryDetails?.address && (
+        {order?.orderType === "delivery" && order?.deliveryDetails?.address && (
           <>
             <div className="line my-2 border-b border-dashed border-gray-300"></div>
 
             <p className="text-xs text-center break-words">
               <strong>Delivery Address</strong><br />
-              {order.deliveryDetails.address}
+              {order?.deliveryDetails?.address}
             </p>
           </>
         )}

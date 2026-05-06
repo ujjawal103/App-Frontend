@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "../notification/Notification";
 import FooterNavStore from "../components/FooterNavStore";
@@ -10,6 +10,8 @@ import { Loader2 } from "lucide-react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { getPendingOrders } from "../offline/pendingOrdersDB";
+import { StoreDataContext } from "../context/StoreContext";
 
 const StoreOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -29,6 +31,7 @@ const StoreOrders = () => {
     const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [showPicker, setShowPicker] = useState(false);
+  const {store , setStore} = useContext(StoreDataContext);
 
 const [range, setRange] = useState([
   {
@@ -42,6 +45,75 @@ const [range, setRange] = useState([
   const storeToken = localStorage.getItem("token");
 
   const fetchAllOrders = async (from, to) => {
+    const shouldUseOffline =
+    !navigator.onLine || store?.offlinemode === true;
+
+    // OFFLINE MODE
+    if (shouldUseOffline) {
+      try {
+        setLoading(true);
+
+        const pending = await getPendingOrders();
+
+        // convert IndexedDB structure to UI order structure
+        const offlineOrders = pending.map((p) => ({
+          ...p.order,
+
+          _id: p._localId,
+
+          offline: true,
+
+          status: "pending",
+
+          paymentMethod: "Offline Cash",
+
+          subTotal:
+            p.order.billingSummary?.subTotal || 0,
+
+          gstApplicable:
+            p.order.billingSummary?.gstApplicable || false,
+
+          gstRate:
+            p.order.billingSummary?.gstRate || 0,
+
+          gstAmount:
+            p.order.billingSummary?.gstAmount || 0,
+
+          restaurantChargeApplicable:
+            p.order.billingSummary?.restaurantChargeApplicable || false,
+
+          restaurantCharge:
+            p.order.billingSummary?.restaurantCharge || 0,
+
+          restaurantChargeAmount:
+            p.order.billingSummary?.restaurantChargeAmount || 0,
+
+          totalAmount:
+            p.order.billingSummary?.totalAmount || 0,
+        }));
+
+        setOrders(offlineOrders);
+        setFilteredOrders(offlineOrders);
+
+        calculateAnalytics(offlineOrders);
+        calculateDuration(offlineOrders);
+
+        toast.success("Showing offline orders 📡");
+
+      } catch (err) {
+        toast.error("Failed to load offline orders");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+
+      return;
+    }
+
+
+
+
+    //online mode
     try {
       setLoading(true);
       const { data } = await axios.get(

@@ -1,6 +1,6 @@
 export function openDB() {
   return new Promise((resolve) => {
-    const req = indexedDB.open("TapRestoDB", 7); // increment version
+    const req = indexedDB.open("TapRestoDB", 8); // increment version
 
     req.onupgradeneeded = (e) => {
       const db = e.target.result;
@@ -23,6 +23,10 @@ export function openDB() {
       // pending orders
       if (!db.objectStoreNames.contains("pendingOrders")) {
         db.createObjectStore("pendingOrders", { keyPath: "id" });
+      }
+
+      if (!db.objectStoreNames.contains("storeCategories")) {
+        db.createObjectStore("storeCategories", { keyPath: "id" });
       }
     };
 

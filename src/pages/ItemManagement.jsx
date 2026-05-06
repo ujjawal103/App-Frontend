@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import { Capacitor } from "@capacitor/core";
 import { getStoreItems } from "../offline/storeItemsDB";
 import { saveStoreItems } from "../offline/storeItemsDB";
+import { saveStoreCategories, getStoreCategories } from "../offline/storeCategoriesDB";
 
 const ItemManagement = () => {
   const [items, setItems] = useState([]);
@@ -77,20 +78,57 @@ const ItemManagement = () => {
   };
 
 
-  const fetchCategories = async () => {
+//   const fetchCategories = async () => {
+//   try {
+//     const res = await axios.get(
+//       `${import.meta.env.VITE_BASE_URL}categories`,
+//       {
+//         headers: { Authorization: `Bearer ${token}` },
+//       }
+//     );
+//     setCategories(res.data.categories || []);
+//   } catch (err) {
+//     toast.error("Failed to load categories");
+//   }
+// };
+
+const fetchCategories = async () => {
   try {
+
     const res = await axios.get(
       `${import.meta.env.VITE_BASE_URL}categories`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
-    setCategories(res.data.categories || []);
+
+    const categoriesList =
+      res.data.categories || [];
+
+    setCategories(categoriesList);
+
+    // ✅ Save offline
+    await saveStoreCategories(categoriesList);
+
   } catch (err) {
+
+    // ✅ Offline fallback
+    if (Capacitor.isNativePlatform()) {
+
+      const cachedCategories =
+        await getStoreCategories();
+
+      if (cachedCategories) {
+        setCategories(cachedCategories);
+        return;
+      }
+    }
+
     toast.error("Failed to load categories");
   }
 };
-
 
 const handleDeleteCategory = async (categoryId) => {
 
